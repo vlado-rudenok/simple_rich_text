@@ -4,7 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 import 'src/error.dart';
-import 'src/extensions.dart';
+import 'src/extensions_string.dart';
 import 'src/logger.dart';
 
 /// Widget that renders a string with sub-string highlighting.
@@ -69,7 +69,7 @@ class SimpleRichText extends StatelessWidget {
 
     final set = <String>{};
 
-    final linesList = _splitTextIntoLines();
+    final linesList = text.splitIntoLines();
 
     final items = linesList.asMap().entries.map(
       (entry) {
@@ -87,45 +87,27 @@ class SimpleRichText extends StatelessWidget {
           var acceptNext = true;
           String? commandsList;
 
-          TextSpan? toggle(String m) {
-            if (m == r'\') {
-              final c = entry.value.substring(index + 1, index + 2);
-              log('quote: index=$index: $c');
-              final item = c.wrap(
-                context: context,
-                set: set,
-                commandsList: commandsList,
-                style: style,
-              );
-              acceptNext = false;
-              return item;
-            } else {
-              if (acceptNext) {
-                if (set.contains(m)) {
-                  log('REM: $m');
-                  set.remove(m);
-                } else {
-                  log('ADD: $m');
-                  set.add(m);
-                }
-              }
-
-              acceptNext = true;
-              return null;
-            }
-          }
-
           final items = spansList.map(
             (currentSpan) {
               log('========== $currentSpan ==========');
               commandsList = null; //TRY
               if (currentSpan.isEmpty) {
                 if (index < entry.value.length) {
-                  final m = entry.value.substring(index, index + 1);
-                  final item = toggle(m);
+                  final marker = entry.value.substring(index, index + 1);
+                  final item = marker.toggleMarker(
+                    line: entry.value,
+                    index: index,
+                    context: context,
+                    set: set,
+                    commandsList: commandsList,
+                    style: style,
+                    acceptNext: acceptNext,
+                  );
+                  acceptNext = item.item2;
                   index++;
-                  return item;
+                  return [if (item.item1 != null) item.item1!];
                 }
+                return <TextSpan>[];
               } else {
                 final adv = currentSpan.length;
                 if (currentSpan[0] == '{') {
@@ -145,24 +127,36 @@ class SimpleRichText extends StatelessWidget {
                   style: style,
                 );
                 index += adv;
+                final TextSpan? toggled;
                 if (index < entry.value.length) {
-                  final m = entry.value.substring(index, index + 1);
-                  log('*** format: $m');
-                  toggle(m);
+                  final marker = entry.value.substring(index, index + 1);
+                  log('*** format: $marker');
+                  final toggledMarker = marker.toggleMarker(
+                    line: entry.value,
+                    index: index,
+                    context: context,
+                    set: set,
+                    commandsList: commandsList,
+                    style: style,
+                    acceptNext: acceptNext,
+                  );
+                  toggled = toggledMarker.item1;
+                  acceptNext = toggledMarker.item2;
                   index++;
+                } else {
+                  toggled = null;
                 }
 
-                return item;
+                return [if (toggled != null) toggled, item];
               }
             },
-          ).whereType<TextSpan>();
+          );
 
           if (!allowNonClosedTags && set.isNotEmpty) {
             throw SimpleRichTextError('not closed: $set');
           }
-
           return [
-            ...items,
+            ...items.flattened,
             if (_ifNotLastLine(entry.key, linesList)) _emptyLine,
           ];
         }
@@ -182,16 +176,6 @@ class SimpleRichText extends StatelessWidget {
       textAlign: textAlign ?? TextAlign.start,
       textScaleFactor: textScaleFactor ?? MediaQuery.of(context).textScaleFactor,
     );
-  }
-
-  List<String> _splitTextIntoLines() {
-    final containsNewLine = text.contains(r'\n');
-    log('Contains new line: $containsNewLine');
-
-    final list = [if (containsNewLine) ...text.split(r'\n'), if (!containsNewLine) text];
-    log('lines=${list.length}: $list');
-
-    return list;
   }
 
   bool _ifNotLastLine(int k, List<String> linesList) => k < linesList.length - 1;
