@@ -1,4 +1,101 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+
+import 'colors.dart';
+import 'commands.dart';
+import 'commands_handler.dart';
+import 'error.dart';
+import 'logger.dart';
+
+extension Splitable on String {
+  List<String> splitWithChars(String? chars) => split(
+        RegExp(
+          chars ?? r'[*~/_\\]',
+        ),
+      );
+
+  TextSpan wrap({
+    required BuildContext context,
+    required Set<String> set,
+    required String? commandsList,
+    required TextStyle style,
+  }) {
+    log('wrap: $this set=$set');
+
+    final Map<String, String> map = {
+      if (commandsList != null) ..._parseCommands(commandsList),
+    };
+
+    final textStyle = _prepareStyle(
+      map,
+      set,
+      map.parseDecorationStyle(),
+      style,
+    );
+    log('attributes: $map');
+
+    if (map.containsCommands()) {
+      return TextSpan(
+        text: this,
+        // Beware!  This class is only safe because the TapGestureRecognizer is not given a deadline and therefore never allocates any resources.
+        // In any other situation -- setting a deadline, using any of the less trivial recognizers, etc -- you would have to manage the gesture recognizer's lifetime
+        // and call dispose() when the TextSpan was no longer being rendered.
+        // Since TextSpan itself is @immutable, this means that you would have to manage the recognizer from outside
+        // the TextSpan, e.g. in the State of a stateful widget that then hands the recognizer to the TextSpan.
+        recognizer: TapGestureRecognizer()
+          ..onTap = () => CommandHandler.handleTap(
+                caption: this,
+                map: map,
+                context: context,
+              ),
+        style: textStyle,
+      );
+    } else {
+      return TextSpan(text: this, style: textStyle);
+    }
+  }
+
+  Map<String, String> _parseCommands(String commandsList) {
+    final pairs = commandsList.split(';').map((e) => e.split(':'));
+
+    if (pairs.any((element) => element.length != 2)) {
+      throw const SimpleRichTextError(
+        'attribute value is missing a value (e.g., you passed {key} but not {key:value}',
+      );
+    }
+
+    return {
+      for (var pair in pairs)
+        if (pair.length == 2) pair.first.trim(): pair.last.trim()
+    };
+  }
+
+  TextStyle _prepareStyle(
+    Map<String, String> map,
+    Set<String> set,
+    TextDecorationStyle? textDecorationStyle,
+    TextStyle style,
+  ) {
+    final textStyle = style.copyWith(
+      color: map.containsKey('color') ? parseColor(map['color']!) : style.color,
+      decoration: set.contains('_') ? TextDecoration.underline : TextDecoration.none,
+      fontStyle: set.contains('/') ? FontStyle.italic : FontStyle.normal,
+      fontWeight: set.contains('*') ? FontWeight.bold : FontWeight.normal,
+      fontSize: map.containsKey('fontSize') ? double.parse(map['fontSize']!) : style.fontSize,
+      fontFamily: map.containsKey('fontFamily') ? '${map['fontFamily']}' : style.fontFamily,
+      backgroundColor: map.containsKey('backgroundColor') ? parseColor(map['backgroundColor']!) : style.backgroundColor,
+      decorationColor: map.containsKey('decorationColor') ? parseColor(map['decorationColor']!) : style.decorationColor,
+      decorationStyle: textDecorationStyle ?? style.decorationStyle,
+      decorationThickness: map.containsKey('decorationThickness')
+          ? double.parse(map['decorationThickness']!)
+          : style.decorationThickness,
+      height: map.containsKey('height') ? double.parse(map['height']!) : style.height,
+      letterSpacing: map.containsKey('letterSpacing') ? double.parse(map['letterSpacing']!) : style.letterSpacing,
+      wordSpacing: map.containsKey('wordSpacing') ? double.parse(map['wordSpacing']!) : style.wordSpacing,
+    );
+    return textStyle;
+  }
+}
 
 extension Convertible on Map<String, String> {
   TextDecorationStyle? parseDecorationStyle() {
@@ -21,4 +118,10 @@ extension Convertible on Map<String, String> {
     }
     return null;
   }
+
+  bool containsCommands() =>
+      containsKey(Commands.popRoute.rawValue) ||
+      containsKey(Commands.pushRoute.rawValue) ||
+      containsKey(Commands.replaceRoute.rawValue) ||
+      containsKey(Commands.openLink.rawValue);
 }

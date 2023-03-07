@@ -1,15 +1,11 @@
 library simple_rich_text;
 
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-import 'src/colors.dart';
-import 'src/commands.dart';
-import 'src/commands_handler.dart';
 import 'src/error.dart';
 import 'src/extensions.dart';
+import 'src/logger.dart';
 
 /// Widget that renders a string with sub-string highlighting.
 class SimpleRichText extends StatelessWidget {
@@ -77,7 +73,7 @@ class SimpleRichText extends StatelessWidget {
 
     final items = linesList.asMap().entries.map(
       (entry) {
-        final spansList = _splitLineIntoArray(entry.value);
+        final spansList = entry.value.splitWithChars(chars);
         log('Line ${entry.key + 1}: ${entry.value}');
         log('len=${spansList.length}: $spansList');
 
@@ -91,44 +87,18 @@ class SimpleRichText extends StatelessWidget {
           var acceptNext = true;
           String? commandsList;
 
-          TextSpan wrap(String value) {
-            log('wrap: $value set=$set');
-
-            final Map<String, String> map = {
-              if (commandsList != null) ..._parseCommands(commandsList!),
-            };
-
-            final textStyle = _prepareStyle(map, set, map.parseDecorationStyle());
-            log('attributes: $map');
-
-            if (_mapContainsCommands(map)) {
-              return TextSpan(
-                text: value,
-                // Beware!  This class is only safe because the TapGestureRecognizer is not given a deadline and therefore never allocates any resources.
-                // In any other situation -- setting a deadline, using any of the less trivial recognizers, etc -- you would have to manage the gesture recognizer's lifetime
-                // and call dispose() when the TextSpan was no longer being rendered.
-                // Since TextSpan itself is @immutable, this means that you would have to manage the recognizer from outside
-                // the TextSpan, e.g. in the State of a stateful widget that then hands the recognizer to the TextSpan.
-                recognizer: TapGestureRecognizer()
-                  ..onTap = () => CommandHandler.handleTap(
-                        caption: value,
-                        map: map,
-                        context: context,
-                        log: log,
-                      ),
-                style: textStyle,
-              );
-            } else {
-              return TextSpan(text: value, style: textStyle);
-            }
-          }
-
-          void toggle(String m) {
+          TextSpan? toggle(String m) {
             if (m == r'\') {
               final c = entry.value.substring(index + 1, index + 2);
               log('quote: index=$index: $c');
-              wrap(c);
+              final item = c.wrap(
+                context: context,
+                set: set,
+                commandsList: commandsList,
+                style: style,
+              );
               acceptNext = false;
+              return item;
             } else {
               if (acceptNext) {
                 if (set.contains(m)) {
@@ -141,6 +111,7 @@ class SimpleRichText extends StatelessWidget {
               }
 
               acceptNext = true;
+              return null;
             }
           }
 
@@ -151,8 +122,9 @@ class SimpleRichText extends StatelessWidget {
               if (currentSpan.isEmpty) {
                 if (index < entry.value.length) {
                   final m = entry.value.substring(index, index + 1);
-                  toggle(m);
+                  final item = toggle(m);
                   index++;
+                  return item;
                 }
               } else {
                 final adv = currentSpan.length;
@@ -166,7 +138,12 @@ class SimpleRichText extends StatelessWidget {
                     log('remaining: $currentSpan');
                   }
                 }
-                final item = wrap(currentSpan);
+                final item = currentSpan.wrap(
+                  context: context,
+                  set: set,
+                  commandsList: commandsList,
+                  style: style,
+                );
                 index += adv;
                 if (index < entry.value.length) {
                   final m = entry.value.substring(index, index + 1);
@@ -207,50 +184,6 @@ class SimpleRichText extends StatelessWidget {
     );
   }
 
-  TextStyle _prepareStyle(Map<String, String> map, Set<String> set, TextDecorationStyle? textDecorationStyle) {
-    final textStyle = style.copyWith(
-      color: map.containsKey('color') ? parseColor(map['color']!) : style.color,
-      decoration: set.contains('_') ? TextDecoration.underline : TextDecoration.none,
-      fontStyle: set.contains('/') ? FontStyle.italic : FontStyle.normal,
-      fontWeight: set.contains('*') ? FontWeight.bold : FontWeight.normal,
-      fontSize: map.containsKey('fontSize') ? double.parse(map['fontSize']!) : style.fontSize,
-      fontFamily: map.containsKey('fontFamily') ? '${map['fontFamily']}' : style.fontFamily,
-      backgroundColor:
-          map.containsKey('backgroundColor') ? parseColor(map['backgroundColor']!) : style.backgroundColor,
-      decorationColor:
-          map.containsKey('decorationColor') ? parseColor(map['decorationColor']!) : style.decorationColor,
-      decorationStyle: textDecorationStyle ?? style.decorationStyle,
-      decorationThickness: map.containsKey('decorationThickness')
-          ? double.parse(map['decorationThickness']!)
-          : style.decorationThickness,
-      height: map.containsKey('height') ? double.parse(map['height']!) : style.height,
-      letterSpacing: map.containsKey('letterSpacing') ? double.parse(map['letterSpacing']!) : style.letterSpacing,
-      wordSpacing: map.containsKey('wordSpacing') ? double.parse(map['wordSpacing']!) : style.wordSpacing,
-    );
-    return textStyle;
-  }
-
-  bool _mapContainsCommands(Map<String, String> map) =>
-      map.containsKey(Commands.popRoute.rawValue) ||
-      map.containsKey(Commands.pushRoute.rawValue) ||
-      map.containsKey(Commands.replaceRoute.rawValue) ||
-      map.containsKey(Commands.openLink.rawValue);
-
-  Map<String, String> _parseCommands(String commandsList) {
-    final pairs = commandsList.split(';').map((e) => e.split(':'));
-
-    if (pairs.any((element) => element.length != 2)) {
-      throw const SimpleRichTextError(
-        'attribute value is missing a value (e.g., you passed {key} but not {key:value}',
-      );
-    }
-
-    return {
-      for (var pair in pairs)
-        if (pair.length == 2) pair.first.trim(): pair.last.trim()
-    };
-  }
-
   List<String> _splitTextIntoLines() {
     final containsNewLine = text.contains(r'\n');
     log('Contains new line: $containsNewLine');
@@ -261,15 +194,7 @@ class SimpleRichText extends StatelessWidget {
     return list;
   }
 
-  List<String> _splitLineIntoArray(String line) => line.split(RegExp(chars ?? r'[*~/_\\]'));
-
   bool _ifNotLastLine(int k, List<String> linesList) => k < linesList.length - 1;
 
   TextSpan get _emptyLine => const TextSpan(text: '\n');
-
-  void log(String s) {
-    if (kDebugMode) {
-      print('simple_rich_text: $s');
-    }
-  }
 }

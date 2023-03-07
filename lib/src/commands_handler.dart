@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import 'commands.dart';
+import 'logger.dart';
 
 class CommandHandler {
   CommandHandler._();
@@ -10,33 +11,28 @@ class CommandHandler {
     required String caption,
     required Map<String, String> map,
     required BuildContext context,
-    required void Function(String) log,
   }) async {
     if (map.containsKey(Commands.pushRoute.rawValue)) {
       await CommandHandler._onCommandPush(
         value: map[Commands.pushRoute.rawValue]!,
         caption: caption,
         context: context,
-        log: log,
       );
     } else if (map.containsKey(Commands.replaceRoute.rawValue)) {
       await CommandHandler._onCommandReplace(
         value: map[Commands.replaceRoute.rawValue]!,
         caption: caption,
         context: context,
-        log: log,
       );
     } else if (map.containsKey(Commands.openLink.rawValue)) {
       await CommandHandler._onCommandLink(
         value: map[Commands.openLink.rawValue]!,
         caption: caption,
-        log: log,
       );
     } else {
       CommandHandler._onCommandPop(
         caption: caption,
         context: context,
-        log: log,
       );
     }
   }
@@ -44,7 +40,6 @@ class CommandHandler {
   static Future<void> _onCommandLink({
     required String value,
     required String caption,
-    required void Function(String) log,
   }) async {
     log('TAP: HTTP: $caption => /$value');
 
@@ -63,7 +58,6 @@ class CommandHandler {
   static void _onCommandPop({
     required String caption,
     required BuildContext context,
-    required void Function(String) log,
   }) {
     log('TAP: $caption => pop');
     Navigator.pop(context);
@@ -73,7 +67,6 @@ class CommandHandler {
     required String value,
     required String caption,
     required BuildContext context,
-    required void Function(String) log,
   }) async {
     log('TAP: POP&PUSH: $caption => /$value');
     await Navigator.popAndPushNamed(context, '/$value');
@@ -83,7 +76,6 @@ class CommandHandler {
     required String value,
     required String caption,
     required BuildContext context,
-    required void Function(String) log,
   }) async {
     log('TAP: PUSH: $caption => /$value');
     await Navigator.pushNamed(context, '/$value');
