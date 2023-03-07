@@ -9,6 +9,7 @@ void main() {
   // to work with. The WidgetTester allows you to build and interact
   // with widgets in the test environment.
   testWidgets('test the thing!', (WidgetTester tester) async {
-    await tester.pumpWidget(Directionality(child: SimpleRichText('This is *bold*'), textDirection: TextDirection.ltr));
+    await tester
+        .pumpWidget(const Directionality(textDirection: TextDirection.ltr, child: SimpleRichText('This is *bold*')));
   });
 }
