@@ -2,7 +2,7 @@ library simple_rich_text;
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 const Map<String, int> colorMap = {
   'aqua': 0x00FFFF,
@@ -44,18 +44,20 @@ Color parseColor(String color) {
 
 /// Widget that renders a string with sub-string highlighting.
 class SimpleRichText extends StatelessWidget {
-  SimpleRichText(this.text,
-      {this.chars,
-      this.context,
-      this.fussy,
-      this.logIt = false,
-      this.maxLines,
-      this.pre,
-      this.post,
-      this.style = const TextStyle(),
-      this.textAlign,
-      this.textOverflow,
-      this.textScaleFactor});
+  SimpleRichText(
+    this.text, {
+    this.chars,
+    this.context,
+    this.fussy,
+    this.logIt = false,
+    this.maxLines,
+    this.pre,
+    this.post,
+    this.style = const TextStyle(),
+    this.textAlign,
+    this.textOverflow,
+    this.textScaleFactor,
+  });
 
   final String? chars;
 
@@ -128,8 +130,7 @@ class SimpleRichText extends StatelessWidget {
       for (int k = 0; k < linesList.length; k++) {
         log('Line ${k + 1}: ${linesList[k]}');
         // split into array
-        List<String> spanList =
-            linesList[k].split(RegExp(chars ?? r"[*~/_\\]"));
+        List<String> spanList = linesList[k].split(RegExp(chars ?? r"[*~/_\\]"));
         log("len=${spanList.length}: $spanList");
 
         if (spanList.length == 1) {
@@ -169,55 +170,33 @@ class SimpleRichText extends StatelessWidget {
             // TextDecorationStyle "values" is ignored
             TextDecorationStyle? _textDecorationStyle;
             if (map.containsKey('decorationStyle')) {
-              if (map['decorationStyle'] == 'dashed')
-                _textDecorationStyle = TextDecorationStyle.dashed;
-              if (map['decorationStyle'] == 'double')
-                _textDecorationStyle = TextDecorationStyle.double;
-              if (map['decorationStyle'] == 'dotted')
-                _textDecorationStyle = TextDecorationStyle.dotted;
-              if (map['decorationStyle'] == 'solid')
-                _textDecorationStyle = TextDecorationStyle.solid;
-              if (map['decorationStyle'] == 'wavy')
-                _textDecorationStyle = TextDecorationStyle.wavy;
+              if (map['decorationStyle'] == 'dashed') _textDecorationStyle = TextDecorationStyle.dashed;
+              if (map['decorationStyle'] == 'double') _textDecorationStyle = TextDecorationStyle.double;
+              if (map['decorationStyle'] == 'dotted') _textDecorationStyle = TextDecorationStyle.dotted;
+              if (map['decorationStyle'] == 'solid') _textDecorationStyle = TextDecorationStyle.solid;
+              if (map['decorationStyle'] == 'wavy') _textDecorationStyle = TextDecorationStyle.wavy;
             }
 
             TextStyle ts;
             ts = style!.copyWith(
-              color: map.containsKey('color')
-                  ? parseColor(map['color']!)
-                  : style!.color,
-              decoration: set.contains('_')
-                  ? TextDecoration.underline
-                  : TextDecoration.none,
-              fontStyle:
-                  set.contains('/') ? FontStyle.italic : FontStyle.normal,
-              fontWeight:
-                  set.contains('*') ? FontWeight.bold : FontWeight.normal,
-              fontSize: map.containsKey('fontSize')
-                  ? double.parse(map['fontSize']!)
-                  : style!.fontSize,
-              fontFamily: map.containsKey('fontFamily')
-                  ? '${map['fontFamily']}'
-                  : style!.fontFamily,
-              backgroundColor: map.containsKey('backgroundColor')
-                  ? parseColor(map['backgroundColor']!)
-                  : style!.backgroundColor,
-              decorationColor: map.containsKey('decorationColor')
-                  ? parseColor(map['decorationColor']!)
-                  : style!.decorationColor,
+              color: map.containsKey('color') ? parseColor(map['color']!) : style!.color,
+              decoration: set.contains('_') ? TextDecoration.underline : TextDecoration.none,
+              fontStyle: set.contains('/') ? FontStyle.italic : FontStyle.normal,
+              fontWeight: set.contains('*') ? FontWeight.bold : FontWeight.normal,
+              fontSize: map.containsKey('fontSize') ? double.parse(map['fontSize']!) : style!.fontSize,
+              fontFamily: map.containsKey('fontFamily') ? '${map['fontFamily']}' : style!.fontFamily,
+              backgroundColor:
+                  map.containsKey('backgroundColor') ? parseColor(map['backgroundColor']!) : style!.backgroundColor,
+              decorationColor:
+                  map.containsKey('decorationColor') ? parseColor(map['decorationColor']!) : style!.decorationColor,
               decorationStyle: _textDecorationStyle ?? style!.decorationStyle,
               decorationThickness: map.containsKey('decorationThickness')
                   ? double.parse(map['decorationThickness']!)
                   : style!.decorationThickness,
-              height: map.containsKey('height')
-                  ? double.parse(map['height']!)
-                  : style!.height,
-              letterSpacing: map.containsKey('letterSpacing')
-                  ? double.parse(map['letterSpacing']!)
-                  : style!.letterSpacing,
-              wordSpacing: map.containsKey('wordSpacing')
-                  ? double.parse(map['wordSpacing']!)
-                  : style!.wordSpacing,
+              height: map.containsKey('height') ? double.parse(map['height']!) : style!.height,
+              letterSpacing:
+                  map.containsKey('letterSpacing') ? double.parse(map['letterSpacing']!) : style!.letterSpacing,
+              wordSpacing: map.containsKey('wordSpacing') ? double.parse(map['wordSpacing']!) : style!.wordSpacing,
             );
 
             if (map.containsKey('pop') ||
@@ -260,11 +239,11 @@ class SimpleRichText extends StatelessWidget {
                     log("TAP: HTTP: $caption => /$v");
                     // assert(v != null);
                     try {
-                      await launch('http://$v');
+                      await launchUrlString('http://$v');
                     } catch (e) {
                       log('Could not launch http://$v: $e');
                       try {
-                        await launch('https://$v');
+                        await launchUrlString('https://$v');
                       } catch (e) {
                         log('Could not launch https://$v: $e');
                       }
@@ -278,7 +257,8 @@ class SimpleRichText extends StatelessWidget {
                 }
               }
 
-              children.add(TextSpan(
+              children.add(
+                TextSpan(
                   text: v,
                   // Beware!  This class is only safe because the TapGestureRecognizer is not given a deadline and therefore never allocates any resources.
                   // In any other situation -- setting a deadline, using any of the less trivial recognizers, etc -- you would have to manage the gesture recognizer's lifetime
@@ -286,7 +266,9 @@ class SimpleRichText extends StatelessWidget {
                   // Since TextSpan itself is @immutable, this means that you would have to manage the recognizer from outside
                   // the TextSpan, e.g. in the State of a stateful widget that then hands the recognizer to the TextSpan.
                   recognizer: TapGestureRecognizer()..onTap = onTapNew(v, map),
-                  style: ts));
+                  style: ts,
+                ),
+              );
             } else {
               children.add(TextSpan(text: v, style: ts));
             }
@@ -359,12 +341,12 @@ class SimpleRichText extends StatelessWidget {
       }
 
       return RichText(
-          maxLines: this.maxLines ?? null,
-          overflow: this.textOverflow ?? TextOverflow.clip,
-          text: TextSpan(children: children),
-          textAlign: this.textAlign ?? TextAlign.start,
-          textScaleFactor:
-              this.textScaleFactor ?? MediaQuery.of(context).textScaleFactor);
+        maxLines: this.maxLines ?? null,
+        overflow: this.textOverflow ?? TextOverflow.clip,
+        text: TextSpan(children: children),
+        textAlign: this.textAlign ?? TextAlign.start,
+        textScaleFactor: this.textScaleFactor ?? MediaQuery.of(context).textScaleFactor,
+      );
     } // else
   } // build
 
