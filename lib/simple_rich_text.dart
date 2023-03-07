@@ -1,5 +1,6 @@
 library simple_rich_text;
 
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'src/colors.dart';
 import 'src/commands.dart';
 import 'src/commands_handler.dart';
 import 'src/error.dart';
+import 'src/extensions.dart';
 
 /// Widget that renders a string with sub-string highlighting.
 class SimpleRichText extends StatelessWidget {
@@ -46,7 +48,7 @@ class SimpleRichText extends StatelessWidget {
   final TextSpan? trailingText;
 
   /// The {TextStyle} of the {SimpleRichText.text} that isn't highlighted.
-  final TextStyle? style;
+  final TextStyle style;
 
   /// The String to be displayed using rich text.
   final String text;
@@ -69,44 +71,38 @@ class SimpleRichText extends StatelessWidget {
       return const Text('');
     }
 
-    final children = <InlineSpan>[];
-
-    if (leadingText != null) {
-      children.add(leadingText!);
-    }
-
     final set = <String>{};
 
     final linesList = _splitTextIntoLines();
 
-    // Apply modifications into all lines
-    for (int lineIndex = 0; lineIndex < linesList.length; lineIndex++) {
-      log('Line ${lineIndex + 1}: ${linesList[lineIndex]}');
-      final spansList = _splitLineIntoArray(linesList, lineIndex);
-      log('len=${spansList.length}: $spansList');
+    final items = linesList.asMap().entries.map(
+      (entry) {
+        final spansList = _splitLineIntoArray(entry.value);
+        log('Line ${entry.key + 1}: ${entry.value}');
+        log('len=${spansList.length}: $spansList');
 
-      if (_isTrivial(spansList)) {
-        _handleTrivial(children, lineIndex, linesList);
-      } else {
-        int index = 0;
-        bool acceptNext = true;
-        String? commandsList;
+        if (spansList.length == 1) {
+          return [
+            TextSpan(text: entry.value, style: style),
+            if (_ifNotLastLine(entry.key, linesList)) _emptyLine,
+          ];
+        } else {
+          var index = 0;
+          var acceptNext = true;
+          String? commandsList;
 
-        void wrap(String value) {
-          log('wrap: $value set=$set');
+          TextSpan wrap(String value) {
+            log('wrap: $value set=$set');
 
-          final Map<String, String> map = {};
+            final Map<String, String> map = {
+              if (commandsList != null) ..._parseCommands(commandsList!),
+            };
 
-          if (commandsList != null) {
-            _addCommandsToMap(commandsList, map);
-          }
+            final textStyle = _prepareStyle(map, set, map.parseDecorationStyle());
+            log('attributes: $map');
 
-          final textDecorationStyle = _prepareTextDecoration(map);
-          final textStyle = _prepareStyle(map, set, textDecorationStyle);
-
-          if (_mapContainsCommands(map)) {
-            children.add(
-              TextSpan(
+            if (_mapContainsCommands(map)) {
+              return TextSpan(
                 text: value,
                 // Beware!  This class is only safe because the TapGestureRecognizer is not given a deadline and therefore never allocates any resources.
                 // In any other situation -- setting a deadline, using any of the less trivial recognizers, etc -- you would have to manage the gesture recognizer's lifetime
@@ -121,77 +117,86 @@ class SimpleRichText extends StatelessWidget {
                         log: log,
                       ),
                 style: textStyle,
-              ),
-            );
-          } else {
-            children.add(TextSpan(text: value, style: textStyle));
+              );
+            } else {
+              return TextSpan(text: value, style: textStyle);
+            }
           }
-        }
 
-        void toggle(String m) {
-          if (m == r'\') {
-            final c = linesList[lineIndex].substring(index + 1, index + 2);
-            log('quote: index=$index: $c');
-            wrap(c);
-            acceptNext = false;
-          } else {
-            if (acceptNext) {
-              if (set.contains(m)) {
-                log('REM: $m');
-                set.remove(m);
+          void toggle(String m) {
+            if (m == r'\') {
+              final c = entry.value.substring(index + 1, index + 2);
+              log('quote: index=$index: $c');
+              wrap(c);
+              acceptNext = false;
+            } else {
+              if (acceptNext) {
+                if (set.contains(m)) {
+                  log('REM: $m');
+                  set.remove(m);
+                } else {
+                  log('ADD: $m');
+                  set.add(m);
+                }
+              }
+
+              acceptNext = true;
+            }
+          }
+
+          final items = spansList.map(
+            (currentSpan) {
+              log('========== $currentSpan ==========');
+              commandsList = null; //TRY
+              if (currentSpan.isEmpty) {
+                if (index < entry.value.length) {
+                  final m = entry.value.substring(index, index + 1);
+                  toggle(m);
+                  index++;
+                }
               } else {
-                log('ADD: $m');
-                set.add(m);
+                final adv = currentSpan.length;
+                if (currentSpan[0] == '{') {
+                  log('link: $currentSpan');
+                  final close = currentSpan.indexOf('}');
+                  if (close > 0) {
+                    commandsList = currentSpan.substring(1, close);
+                    log('AAA commandsList=$commandsList');
+                    currentSpan = currentSpan.substring(close + 1);
+                    log('remaining: $currentSpan');
+                  }
+                }
+                final item = wrap(currentSpan);
+                index += adv;
+                if (index < entry.value.length) {
+                  final m = entry.value.substring(index, index + 1);
+                  log('*** format: $m');
+                  toggle(m);
+                  index++;
+                }
+
+                return item;
               }
-            }
+            },
+          ).whereType<TextSpan>();
 
-            acceptNext = true;
+          if (!allowNonClosedTags && set.isNotEmpty) {
+            throw SimpleRichTextError('not closed: $set');
           }
+
+          return [
+            ...items,
+            if (_ifNotLastLine(entry.key, linesList)) _emptyLine,
+          ];
         }
+      },
+    ).flattened;
 
-        for (var currentSpan in spansList) {
-          log('========== $currentSpan ==========');
-          commandsList = null; //TRY
-          if (currentSpan.isEmpty) {
-            if (index < linesList[lineIndex].length) {
-              final m = linesList[lineIndex].substring(index, index + 1);
-              toggle(m);
-              index++;
-            }
-          } else {
-            final adv = currentSpan.length;
-            if (currentSpan[0] == '{') {
-              log('link: $currentSpan');
-              final close = currentSpan.indexOf('}');
-              if (close > 0) {
-                commandsList = currentSpan.substring(1, close);
-                log('AAA commandsList=$commandsList');
-                currentSpan = currentSpan.substring(close + 1);
-                log('remaining: $currentSpan');
-              }
-            }
-            wrap(currentSpan);
-            index += adv;
-            if (index < linesList[lineIndex].length) {
-              final m = linesList[lineIndex].substring(index, index + 1);
-              log('*** format: $m');
-              toggle(m);
-              index++;
-            }
-          }
-        }
-
-        if (!allowNonClosedTags && set.isNotEmpty) {
-          throw SimpleRichTextError('not closed: $set');
-        }
-
-        _addEmptyLineIfNeeded(lineIndex, linesList, children);
-      }
-    }
-
-    if (trailingText != null) {
-      children.add(trailingText!);
-    }
+    final children = <InlineSpan>[
+      if (leadingText != null) leadingText!,
+      ...items,
+      if (trailingText != null) trailingText!,
+    ];
 
     return RichText(
       maxLines: maxLines,
@@ -203,24 +208,24 @@ class SimpleRichText extends StatelessWidget {
   }
 
   TextStyle _prepareStyle(Map<String, String> map, Set<String> set, TextDecorationStyle? textDecorationStyle) {
-    final textStyle = style!.copyWith(
-      color: map.containsKey('color') ? parseColor(map['color']!) : style!.color,
+    final textStyle = style.copyWith(
+      color: map.containsKey('color') ? parseColor(map['color']!) : style.color,
       decoration: set.contains('_') ? TextDecoration.underline : TextDecoration.none,
       fontStyle: set.contains('/') ? FontStyle.italic : FontStyle.normal,
       fontWeight: set.contains('*') ? FontWeight.bold : FontWeight.normal,
-      fontSize: map.containsKey('fontSize') ? double.parse(map['fontSize']!) : style!.fontSize,
-      fontFamily: map.containsKey('fontFamily') ? '${map['fontFamily']}' : style!.fontFamily,
+      fontSize: map.containsKey('fontSize') ? double.parse(map['fontSize']!) : style.fontSize,
+      fontFamily: map.containsKey('fontFamily') ? '${map['fontFamily']}' : style.fontFamily,
       backgroundColor:
-          map.containsKey('backgroundColor') ? parseColor(map['backgroundColor']!) : style!.backgroundColor,
+          map.containsKey('backgroundColor') ? parseColor(map['backgroundColor']!) : style.backgroundColor,
       decorationColor:
-          map.containsKey('decorationColor') ? parseColor(map['decorationColor']!) : style!.decorationColor,
-      decorationStyle: textDecorationStyle ?? style!.decorationStyle,
+          map.containsKey('decorationColor') ? parseColor(map['decorationColor']!) : style.decorationColor,
+      decorationStyle: textDecorationStyle ?? style.decorationStyle,
       decorationThickness: map.containsKey('decorationThickness')
           ? double.parse(map['decorationThickness']!)
-          : style!.decorationThickness,
-      height: map.containsKey('height') ? double.parse(map['height']!) : style!.height,
-      letterSpacing: map.containsKey('letterSpacing') ? double.parse(map['letterSpacing']!) : style!.letterSpacing,
-      wordSpacing: map.containsKey('wordSpacing') ? double.parse(map['wordSpacing']!) : style!.wordSpacing,
+          : style.decorationThickness,
+      height: map.containsKey('height') ? double.parse(map['height']!) : style.height,
+      letterSpacing: map.containsKey('letterSpacing') ? double.parse(map['letterSpacing']!) : style.letterSpacing,
+      wordSpacing: map.containsKey('wordSpacing') ? double.parse(map['wordSpacing']!) : style.wordSpacing,
     );
     return textStyle;
   }
@@ -231,78 +236,36 @@ class SimpleRichText extends StatelessWidget {
       map.containsKey(Commands.replaceRoute.rawValue) ||
       map.containsKey(Commands.openLink.rawValue);
 
-  TextDecorationStyle? _prepareTextDecoration(Map<String, String> map) {
-    TextDecorationStyle? textDecorationStyle;
-    if (map.containsKey('decorationStyle')) {
-      if (map['decorationStyle'] == 'dashed') {
-        textDecorationStyle = TextDecorationStyle.dashed;
-      }
-      if (map['decorationStyle'] == 'double') {
-        textDecorationStyle = TextDecorationStyle.double;
-      }
-      if (map['decorationStyle'] == 'dotted') {
-        textDecorationStyle = TextDecorationStyle.dotted;
-      }
-      if (map['decorationStyle'] == 'solid') {
-        textDecorationStyle = TextDecorationStyle.solid;
-      }
-      if (map['decorationStyle'] == 'wavy') {
-        textDecorationStyle = TextDecorationStyle.wavy;
-      }
-    }
-    return textDecorationStyle;
-  }
+  Map<String, String> _parseCommands(String commandsList) {
+    final pairs = commandsList.split(';').map((e) => e.split(':'));
 
-  void _addCommandsToMap(String commandsList, Map<String, String> map) {
-    final pairs = commandsList.split(';');
-    for (final pair in pairs) {
-      final a = pair.split(':');
-      if (a.length == 2) {
-        map[a[0].trim()] = a[1].trim();
-      } else {
-        throw const SimpleRichTextError(
-          'attribute value is missing a value (e.g., you passed {key} but not {key:value}',
-        );
-      }
+    if (pairs.any((element) => element.length != 2)) {
+      throw const SimpleRichTextError(
+        'attribute value is missing a value (e.g., you passed {key} but not {key:value}',
+      );
     }
-    log('attributes: $map');
-  }
 
-  void _handleTrivial(List<InlineSpan> children, int k, List<String> linesList) {
-    log('trivial');
-    if (style == null) {
-      children.add(const TextSpan(text: ''));
-      _addEmptyLineIfNeeded(k, linesList, children);
-    } else {
-      children.add(TextSpan(text: linesList[k], style: style));
-      _addEmptyLineIfNeeded(k, linesList, children);
-    }
+    return {
+      for (var pair in pairs)
+        if (pair.length == 2) pair.first.trim(): pair.last.trim()
+    };
   }
-
-  bool _isTrivial(List<String> spanList) => spanList.length == 1;
 
   List<String> _splitTextIntoLines() {
     final containsNewLine = text.contains(r'\n');
     log('Contains new line: $containsNewLine');
-    List<String> linesList = [];
-    if (containsNewLine) {
-      linesList = text.split(r'\n');
-      log('lines=${linesList.length}: $linesList');
-    } else {
-      linesList.add(text);
-    }
-    return linesList;
+
+    final list = [if (containsNewLine) ...text.split(r'\n'), if (!containsNewLine) text];
+    log('lines=${list.length}: $list');
+
+    return list;
   }
 
-  List<String> _splitLineIntoArray(List<String> linesList, int k) => linesList[k].split(RegExp(chars ?? r'[*~/_\\]'));
+  List<String> _splitLineIntoArray(String line) => line.split(RegExp(chars ?? r'[*~/_\\]'));
 
   bool _ifNotLastLine(int k, List<String> linesList) => k < linesList.length - 1;
 
-  void _addEmptyLineIfNeeded(int k, List<String> linesList, List<InlineSpan> children) {
-    if (_ifNotLastLine(k, linesList)) {
-      children.add(const TextSpan(text: '\n'));
-    }
-  }
+  TextSpan get _emptyLine => const TextSpan(text: '\n');
 
   void log(String s) {
     if (kDebugMode) {
