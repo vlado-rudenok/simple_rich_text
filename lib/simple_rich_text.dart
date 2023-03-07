@@ -28,16 +28,11 @@ const Map<String, int> colorMap = {
 };
 
 Color parseColor(String color) {
-//  print("parseColor: $color");
   var v = colorMap[color];
   if (v == null) {
     return Colors.red;
   } else {
-//    return Color(v);
-//    return Colors.green;
-//    int n = Color(v);
     Color out = Color((0xff << 24) | v);
-//    print("parseColor: $color => $out");
     return out;
   }
 }
@@ -107,7 +102,6 @@ class SimpleRichText extends StatelessWidget {
     if (text.isEmpty) {
       return Text('');
     } else {
-      //print('text: $text');
       List<InlineSpan> children = [];
 
       if (pre != null) {
@@ -129,20 +123,17 @@ class SimpleRichText extends StatelessWidget {
       // Apply modifications into all lines
       for (int k = 0; k < linesList.length; k++) {
         log('Line ${k + 1}: ${linesList[k]}');
-        // split into array
-        List<String> spanList = linesList[k].split(RegExp(chars ?? r"[*~/_\\]"));
+        List<String> spanList = _splitIntoArray(linesList, k);
         log("len=${spanList.length}: $spanList");
 
         if (spanList.length == 1) {
           log("trivial");
           if (style == null) {
             children.add(TextSpan(text: ''));
-            // If no last line:
-            if (k < linesList.length - 1) children.add(TextSpan(text: '\n'));
+            if (_ifNotLastLine(k, linesList)) children.add(TextSpan(text: '\n'));
           } else {
             children.add(TextSpan(text: linesList[k], style: style));
-            // If no last line:
-            if (k < linesList.length - 1) children.add(TextSpan(text: '\n'));
+            if (_ifNotLastLine(k, linesList)) children.add(TextSpan(text: '\n'));
           }
         } else {
           int i = 0;
@@ -331,8 +322,7 @@ class SimpleRichText extends StatelessWidget {
             throw 'simple_rich_text: not closed: $set'; //TODO: throw real error?
           }
 
-          // If no last line:
-          if (k < linesList.length - 1) children.add(TextSpan(text: '\n'));
+          if (_ifNotLastLine(k, linesList)) children.add(TextSpan(text: '\n'));
         }
       }
 
@@ -347,10 +337,14 @@ class SimpleRichText extends StatelessWidget {
         textAlign: this.textAlign ?? TextAlign.start,
         textScaleFactor: this.textScaleFactor ?? MediaQuery.of(context).textScaleFactor,
       );
-    } // else
-  } // build
+    }
+  }
+
+  List<String> _splitIntoArray(List<String> linesList, int k) => linesList[k].split(RegExp(chars ?? r"[*~/_\\]"));
+
+  bool _ifNotLastLine(int k, List<String> linesList) => k < linesList.length - 1;
 
   void log(String s) {
     if (logIt) print('---- $s');
   }
-} // class
+}
