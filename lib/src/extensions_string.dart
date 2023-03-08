@@ -11,17 +11,20 @@ import 'logger.dart';
 extension Splitable on String {
   List<String> splitWithChars(String? chars) => split(
         RegExp(
-          chars ?? r'[*~/_\\]',
+          chars ?? '[~*%`^]',
         ),
       );
 
   List<String> splitIntoLines() {
     final containsNewLine = contains(r'\n');
-    log('Contains new line: $containsNewLine');
-
+    if (containsNewLine) {
+      log('Contains new line: $containsNewLine');
+    }
     final list = [if (containsNewLine) ...split(r'\n'), if (!containsNewLine) this];
-    log('lines=${list.length}: $list');
 
+    if (list.length > 1) {
+      log('lines=${list.length}: $list');
+    }
     return list;
   }
 
@@ -122,10 +125,10 @@ extension Splitable on String {
     TextStyle style,
   ) {
     final textStyle = style.copyWith(
-      color: map.containsKey('color') ? parseColor(map['color']!) : style.color,
+      color: map.containsKey('color') ? parseColor(map['color']!) : set.contains('`') ? Colors.blue : style.color,
       decoration: set.contains('_') ? TextDecoration.underline : TextDecoration.none,
-      fontStyle: set.contains('/') ? FontStyle.italic : FontStyle.normal,
-      fontWeight: set.contains('*') ? FontWeight.bold : FontWeight.normal,
+      fontStyle: set.contains('^') || set.contains('%') ? FontStyle.italic : FontStyle.normal,
+      fontWeight: set.contains('*') ? set.contains('~') ? FontWeight.normal : FontWeight.bold : FontWeight.normal,
       fontSize: map.containsKey('fontSize') ? double.parse(map['fontSize']!) : style.fontSize,
       fontFamily: map.containsKey('fontFamily') ? '${map['fontFamily']}' : style.fontFamily,
       backgroundColor: map.containsKey('backgroundColor') ? parseColor(map['backgroundColor']!) : style.backgroundColor,

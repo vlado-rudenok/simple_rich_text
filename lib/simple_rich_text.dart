@@ -74,8 +74,10 @@ class SimpleRichText extends StatelessWidget {
     final items = linesList.asMap().entries.map(
       (entry) {
         final spansList = entry.value.splitWithChars(chars);
-        log('Line ${entry.key + 1}: ${entry.value}');
-        log('len=${spansList.length}: $spansList');
+        if (spansList.length > 1) {
+          log('Line ${entry.key + 1}: ${entry.value}');
+          log('len=${spansList.length}: $spansList');
+        }
 
         if (spansList.length == 1) {
           return [
