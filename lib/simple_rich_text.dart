@@ -5,26 +5,42 @@ import 'package:flutter/material.dart';
 
 import 'src/error.dart';
 import 'src/extensions_string.dart';
+import 'src/global_span.dart';
 import 'src/logger.dart';
+
+class SearchController {
+  List<TextSpan> children = [];
+
+  List<GlobalKey> findAll(String term) => children
+      .whereType<GlobalSpan>()
+      .where((element) => element.child.text?.contains(term) ?? false)
+      .map((e) => e.globalKey)
+      .toList();
+}
 
 /// Widget that renders a string with sub-string highlighting.
 class SimpleRichText extends StatelessWidget {
-  const SimpleRichText(
-    this.text, {
+  const SimpleRichText({
+    required this.text,
+    required this.controller,
+    required this.style,
     super.key,
     this.chars,
     this.allowNonClosedTags = false,
     this.maxLines,
     this.leadingText,
     this.trailingText,
-    this.style = const TextStyle(),
     this.textAlign,
     this.textOverflow,
     this.textScaleFactor,
+    this.contextMenuItems = const [],
   });
 
   /// User-defined chars, default chars set is [*~/_\\]
   final String? chars;
+
+  /// controller for search
+  final SearchController controller;
 
   /// allow non-closed tags (e.g., "this is *bold" because no closing * character), otherwise exception is thrown
   final bool allowNonClosedTags;
@@ -47,7 +63,7 @@ class SimpleRichText extends StatelessWidget {
   final TextStyle style;
 
   /// The String to be displayed using rich text.
-  final String text;
+  final List<String> text;
 
   /// How the text should be aligned horizontally.
   final TextAlign? textAlign;
@@ -61,10 +77,48 @@ class SimpleRichText extends StatelessWidget {
   /// the specified font size.
   final double? textScaleFactor;
 
+  final List<ContextMenuButtonItem> contextMenuItems;
+
   @override
   Widget build(BuildContext context) {
+    final formatted = text.asMap().entries.map((e) => _prepareText(e, context)).flattened;
+    final children = [
+      if (leadingText != null) leadingText!,
+      ...formatted,
+      if (trailingText != null) trailingText!,
+    ];
+
+    controller.children = children;
+
+    return SelectableText.rich(
+      TextSpan(children: children),
+      maxLines: maxLines,
+      textAlign: textAlign ?? TextAlign.justify,
+      textScaleFactor: textScaleFactor ?? MediaQuery.of(context).textScaleFactor,
+      scrollPhysics: const NeverScrollableScrollPhysics(),
+      contextMenuBuilder: (context, editableTextState) => AdaptiveTextSelectionToolbar.buttonItems(
+        anchors: editableTextState.contextMenuAnchors,
+        buttonItems: [
+          ...editableTextState.contextMenuButtonItems,
+          ...contextMenuItems,
+          ContextMenuButtonItem(
+            label: 'Copy!',
+            type: ContextMenuButtonType.custom,
+            onPressed: () {
+              final range = editableTextState.currentTextEditingValue.selection;
+              print(editableTextState.currentTextEditingValue.text.substring(range.start, range.end));
+              print(range);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Iterable<TextSpan> _prepareText(MapEntry<int, String> entry, BuildContext context) {
+    final text = entry.value;
     if (text.isEmpty) {
-      return const Text('');
+      return [const TextSpan()];
     }
 
     final set = <String>{};
@@ -78,10 +132,12 @@ class SimpleRichText extends StatelessWidget {
           log('Line ${entry.key + 1}: ${entry.value}');
           log('len=${spansList.length}: $spansList');
         }
-
         if (spansList.length == 1) {
           return [
-            TextSpan(text: entry.value, style: style),
+            GlobalSpan(
+              globalKey: GlobalKey(),
+              child: TextSpan(text: entry.value, style: style),
+            ),
             if (_ifNotLastLine(entry.key, linesList)) _emptyLine,
           ];
         } else {
@@ -165,19 +221,23 @@ class SimpleRichText extends StatelessWidget {
       },
     ).flattened;
 
-    final children = <InlineSpan>[
-      if (leadingText != null) leadingText!,
-      ...items,
-      if (trailingText != null) trailingText!,
+    return [
+      TextSpan(
+        children: [
+          TextSpan(
+            text: '\n${entry.key + 1}',
+            style: style.copyWith(
+              color: Colors.grey,
+              fontSize: 12,
+            ),
+          ),
+          WidgetSpan(child: SizedBox(width: 0, height: entry.key > 0 ? 28 : 0)),
+          const WidgetSpan(child: SizedBox(width: 8)),
+        ],
+        style: style.copyWith(fontSize: 15),
+      ),
+      ...items
     ];
-
-    return RichText(
-      maxLines: maxLines,
-      overflow: textOverflow ?? TextOverflow.clip,
-      text: TextSpan(children: children),
-      textAlign: textAlign ?? TextAlign.start,
-      textScaleFactor: textScaleFactor ?? MediaQuery.of(context).textScaleFactor,
-    );
   }
 
   bool _ifNotLastLine(int k, List<String> linesList) => k < linesList.length - 1;

@@ -6,6 +6,7 @@ import 'colors.dart';
 import 'commands_handler.dart';
 import 'error.dart';
 import 'extensions_map.dart';
+import 'global_span.dart';
 import 'logger.dart';
 
 extension Splitable on String {
@@ -36,7 +37,7 @@ extension Splitable on String {
   }) {
     log('wrap: $this set=$set');
 
-    final Map<String, String> map = {
+    final map = <String, String>{
       if (commandsList != null) ..._parseCommands(commandsList),
     };
 
@@ -57,7 +58,7 @@ extension Splitable on String {
         // Since TextSpan itself is @immutable, this means that you would have to manage the recognizer from outside
         // the TextSpan, e.g. in the State of a stateful widget that then hands the recognizer to the TextSpan.
         recognizer: TapGestureRecognizer()
-          ..onTap = () => CommandHandler.handleTap(
+          ..onTap = () async => CommandHandler.handleTap(
                 caption: this,
                 map: map,
                 context: context,
@@ -65,7 +66,11 @@ extension Splitable on String {
         style: textStyle,
       );
     } else {
-      return TextSpan(text: this, style: textStyle);
+
+      return GlobalSpan(
+        globalKey: GlobalKey(),
+        child: TextSpan(text: this, style: textStyle),
+      );
     }
   }
 
@@ -125,10 +130,18 @@ extension Splitable on String {
     TextStyle style,
   ) {
     final textStyle = style.copyWith(
-      color: map.containsKey('color') ? parseColor(map['color']!) : set.contains('`') ? Colors.blue : style.color,
+      color: map.containsKey('color')
+          ? parseColor(map['color']!)
+          : set.contains('`')
+              ? Colors.grey
+              : style.color,
       decoration: set.contains('_') ? TextDecoration.underline : TextDecoration.none,
       fontStyle: set.contains('^') || set.contains('%') ? FontStyle.italic : FontStyle.normal,
-      fontWeight: set.contains('*') ? set.contains('~') ? FontWeight.normal : FontWeight.bold : FontWeight.normal,
+      fontWeight: set.contains('*')
+          ? set.contains('~')
+              ? FontWeight.normal
+              : FontWeight.bold
+          : FontWeight.normal,
       fontSize: map.containsKey('fontSize') ? double.parse(map['fontSize']!) : style.fontSize,
       fontFamily: map.containsKey('fontFamily') ? '${map['fontFamily']}' : style.fontFamily,
       backgroundColor: map.containsKey('backgroundColor') ? parseColor(map['backgroundColor']!) : style.backgroundColor,
