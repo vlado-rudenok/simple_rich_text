@@ -20,7 +20,8 @@ const Map<String, int> colorMap = {
   'red': 0xFF0000,
   'silver': 0xC0C0C0,
   'white': 0xFFFFFF,
-  'yellow': 0xFFFF00
+  'yellow': 0xFFFF00,
+  'search_result': 0xECC950,
 };
 
 Color parseColor(String color) {

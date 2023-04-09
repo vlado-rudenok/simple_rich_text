@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:tuple/tuple.dart';
@@ -66,9 +67,8 @@ extension Splitable on String {
         style: textStyle,
       );
     } else {
-
       return GlobalSpan(
-        globalKey: GlobalKey(),
+        globalKey: map.containsKey('searchResult') ? GlobalKey() : null,
         child: TextSpan(text: this, style: textStyle),
       );
     }
@@ -130,11 +130,13 @@ extension Splitable on String {
     TextStyle style,
   ) {
     final textStyle = style.copyWith(
-      color: map.containsKey('color')
-          ? parseColor(map['color']!)
-          : set.contains('`')
-              ? Colors.grey
-              : style.color,
+      color: map.containsKey('searchResult')
+          ? Colors.black
+          : map.containsKey('color')
+              ? parseColor(map['color']!)
+              : set.contains('`')
+                  ? Colors.grey
+                  : style.color,
       decoration: set.contains('_') ? TextDecoration.underline : TextDecoration.none,
       fontStyle: set.contains('^') || set.contains('%') ? FontStyle.italic : FontStyle.normal,
       fontWeight: set.contains('*')
@@ -144,7 +146,11 @@ extension Splitable on String {
           : FontWeight.normal,
       fontSize: map.containsKey('fontSize') ? double.parse(map['fontSize']!) : style.fontSize,
       fontFamily: map.containsKey('fontFamily') ? '${map['fontFamily']}' : style.fontFamily,
-      backgroundColor: map.containsKey('backgroundColor') ? parseColor(map['backgroundColor']!) : style.backgroundColor,
+      backgroundColor: map.containsKey('searchResult')
+          ? parseColor(map['searchResult']!)
+          : map.containsKey('backgroundColor')
+              ? parseColor(map['backgroundColor']!)
+              : style.backgroundColor,
       decorationColor: map.containsKey('decorationColor') ? parseColor(map['decorationColor']!) : style.decorationColor,
       decorationStyle: textDecorationStyle ?? style.decorationStyle,
       decorationThickness: map.containsKey('decorationThickness')
@@ -155,5 +161,29 @@ extension Splitable on String {
       wordSpacing: map.containsKey('wordSpacing') ? double.parse(map['wordSpacing']!) : style.wordSpacing,
     );
     return textStyle;
+  }
+
+  String highlightSearchTerm(String term) => replaceAllMapped(
+        RegExp(term, caseSensitive: false),
+        (match) => '^{searchResult:search_result}${match.group(0)}^',
+      );
+
+  String highlightAllSearchTerms({
+    required List<String> terms,
+    bool Function(String)? condition,
+  }) {
+    var output = this;
+    for (final term in terms.sorted((a, b) => b.length.compareTo(a.length)).asMap().entries) {
+      if (condition?.call(term.value) ?? true) {
+        if (term.key == 0 && contains(term.value)) {
+          output = output.highlightSearchTerm(term.value);
+          break;
+        }
+
+        output = output.highlightSearchTerm(term.value);
+      }
+    }
+
+    return output;
   }
 }

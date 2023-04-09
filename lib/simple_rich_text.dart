@@ -8,39 +8,71 @@ import 'src/extensions_string.dart';
 import 'src/global_span.dart';
 import 'src/logger.dart';
 
-class SearchController {
-  List<TextSpan> children = [];
+class GlobalSearchTerm {
+  const GlobalSearchTerm({
+    required this.line,
+    required this.searchTerms,
+  });
 
-  List<GlobalKey> findAll(String term) => children
-      .whereType<GlobalSpan>()
-      .where((element) => element.child.text?.contains(term) ?? false)
-      .map((e) => e.globalKey)
-      .toList();
+  final String line;
+  final List<String> searchTerms;
+}
+
+class SearchController {
+  SearchController({required this.onUpdate});
+  List<GlobalKey> _globalKeys = [];
+
+  final void Function() onUpdate;
+
+  void updateChildren(List<GlobalSpan> children) {
+    _globalKeys = children.map((e) => e.globalKey).whereType<GlobalKey>().toList();
+    onUpdate();
+  }
+
+  GlobalKey? keyForIndex(int index) {
+    if (index >= _globalKeys.length) {
+      return null;
+    }
+
+    return _globalKeys[index];
+  }
+
+  int get length => _globalKeys.length;
 }
 
 /// Widget that renders a string with sub-string highlighting.
 class SimpleRichText extends StatelessWidget {
   const SimpleRichText({
     required this.text,
-    required this.controller,
     required this.style,
     super.key,
-    this.chars,
     this.allowNonClosedTags = false,
-    this.maxLines,
+    this.appendParagraphNumber = true,
+    this.chars,
+    this.contextMenuItems = const [],
+    this.globalSearchTerm,
     this.leadingText,
-    this.trailingText,
+    this.maxLines,
+    this.searchController,
+    this.searchTerms = const [],
+    this.selectable = true,
     this.textAlign,
     this.textOverflow,
     this.textScaleFactor,
-    this.contextMenuItems = const [],
+    this.trailingText,
   });
 
   /// User-defined chars, default chars set is [*~/_\\]
   final String? chars;
 
   /// controller for search
-  final SearchController controller;
+  final SearchController? searchController;
+
+  /// controller for search
+  final GlobalSearchTerm? globalSearchTerm;
+
+  /// controller for search
+  final bool appendParagraphNumber;
 
   /// allow non-closed tags (e.g., "this is *bold" because no closing * character), otherwise exception is thrown
   final bool allowNonClosedTags;
@@ -77,7 +109,11 @@ class SimpleRichText extends StatelessWidget {
   /// the specified font size.
   final double? textScaleFactor;
 
+  final List<String> searchTerms;
+
   final List<ContextMenuButtonItem> contextMenuItems;
+
+  final bool selectable;
 
   @override
   Widget build(BuildContext context) {
@@ -88,35 +124,59 @@ class SimpleRichText extends StatelessWidget {
       if (trailingText != null) trailingText!,
     ];
 
-    controller.children = children;
+    searchController?.updateChildren(children.whereType<GlobalSpan>().toList());
 
-    return SelectableText.rich(
-      TextSpan(children: children),
+    AdaptiveTextSelectionToolbar contextMenuBuilder(
+      BuildContext context,
+      EditableTextState editableTextState,
+    ) =>
+        AdaptiveTextSelectionToolbar.buttonItems(
+          anchors: editableTextState.contextMenuAnchors,
+          buttonItems: [
+            ...editableTextState.contextMenuButtonItems,
+            ...contextMenuItems,
+            ContextMenuButtonItem(
+              label: 'Copy!',
+              type: ContextMenuButtonType.custom,
+              onPressed: () {
+                final range = editableTextState.currentTextEditingValue.selection;
+                print(editableTextState.currentTextEditingValue.text.substring(range.start, range.end));
+                print(range);
+              },
+            ),
+          ],
+        );
+
+    if (selectable) {
+      return SelectableText.rich(
+        TextSpan(children: children),
+        maxLines: maxLines,
+        textAlign: textAlign ?? TextAlign.justify,
+        textScaleFactor: textScaleFactor ?? MediaQuery.of(context).textScaleFactor,
+        scrollPhysics: const NeverScrollableScrollPhysics(),
+        contextMenuBuilder: contextMenuBuilder,
+      );
+    }
+
+    return RichText(
+      text: TextSpan(children: children),
       maxLines: maxLines,
       textAlign: textAlign ?? TextAlign.justify,
       textScaleFactor: textScaleFactor ?? MediaQuery.of(context).textScaleFactor,
-      scrollPhysics: const NeverScrollableScrollPhysics(),
-      contextMenuBuilder: (context, editableTextState) => AdaptiveTextSelectionToolbar.buttonItems(
-        anchors: editableTextState.contextMenuAnchors,
-        buttonItems: [
-          ...editableTextState.contextMenuButtonItems,
-          ...contextMenuItems,
-          ContextMenuButtonItem(
-            label: 'Copy!',
-            type: ContextMenuButtonType.custom,
-            onPressed: () {
-              final range = editableTextState.currentTextEditingValue.selection;
-              print(editableTextState.currentTextEditingValue.text.substring(range.start, range.end));
-              print(range);
-            },
-          ),
-        ],
-      ),
     );
   }
 
   Iterable<TextSpan> _prepareText(MapEntry<int, String> entry, BuildContext context) {
-    final text = entry.value;
+    var text = entry.value.highlightAllSearchTerms(
+      terms: searchTerms,
+      condition: (term) => term.length > 2,
+    );
+
+    if (searchTerms.isEmpty && globalSearchTerm != null && text.contains(globalSearchTerm!.line)) {
+      final terms = globalSearchTerm?.searchTerms ?? [];
+      text = text.highlightAllSearchTerms(terms: terms);
+    }
+
     if (text.isEmpty) {
       return [const TextSpan()];
     }
@@ -134,10 +194,7 @@ class SimpleRichText extends StatelessWidget {
         }
         if (spansList.length == 1) {
           return [
-            GlobalSpan(
-              globalKey: GlobalKey(),
-              child: TextSpan(text: entry.value, style: style),
-            ),
+            TextSpan(text: entry.value, style: style),
             if (_ifNotLastLine(entry.key, linesList)) _emptyLine,
           ];
         } else {
@@ -224,14 +281,16 @@ class SimpleRichText extends StatelessWidget {
     return [
       TextSpan(
         children: [
-          TextSpan(
-            text: '\n${entry.key + 1}',
-            style: style.copyWith(
-              color: Colors.grey,
-              fontSize: 12,
+          if (appendParagraphNumber) ...[
+            TextSpan(
+              text: '\n${entry.key + 1}',
+              style: style.copyWith(
+                color: Colors.grey,
+                fontSize: 12,
+              ),
             ),
-          ),
-          WidgetSpan(child: SizedBox(width: 0, height: entry.key > 0 ? 28 : 0)),
+            WidgetSpan(child: SizedBox(width: 0, height: entry.key > 0 ? 28 : 0)),
+          ],
           const WidgetSpan(child: SizedBox(width: 8)),
         ],
         style: style.copyWith(fontSize: 15),
