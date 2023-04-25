@@ -18,8 +18,8 @@ class GlobalSearchTerm {
   final List<String> searchTerms;
 }
 
-class SearchController {
-  SearchController({required this.onUpdate});
+class SimpleRichTextSearchController {
+  SimpleRichTextSearchController({required this.onUpdate});
   List<GlobalKey> _globalKeys = [];
 
   final void Function() onUpdate;
@@ -66,7 +66,7 @@ class SimpleRichText extends StatelessWidget {
   final String? chars;
 
   /// controller for search
-  final SearchController? searchController;
+  final SimpleRichTextSearchController? searchController;
 
   /// controller for search
   final GlobalSearchTerm? globalSearchTerm;

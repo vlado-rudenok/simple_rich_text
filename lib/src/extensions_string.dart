@@ -175,7 +175,7 @@ extension Splitable on String {
     var output = this;
     for (final term in terms.sorted((a, b) => b.length.compareTo(a.length)).asMap().entries) {
       if (condition?.call(term.value) ?? true) {
-        if (term.key == 0 && contains(term.value)) {
+        if (term.key == 0 && toLowerCase().contains(term.value)) {
           output = output.highlightSearchTerm(term.value);
           break;
         }
