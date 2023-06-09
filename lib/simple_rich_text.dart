@@ -126,27 +126,6 @@ class SimpleRichText extends StatelessWidget {
 
     searchController?.updateChildren(children.whereType<GlobalSpan>().toList());
 
-    AdaptiveTextSelectionToolbar contextMenuBuilder(
-      BuildContext context,
-      EditableTextState editableTextState,
-    ) =>
-        AdaptiveTextSelectionToolbar.buttonItems(
-          anchors: editableTextState.contextMenuAnchors,
-          buttonItems: [
-            ...editableTextState.contextMenuButtonItems,
-            ...contextMenuItems,
-            ContextMenuButtonItem(
-              label: 'Copy!',
-              type: ContextMenuButtonType.custom,
-              onPressed: () {
-                final range = editableTextState.currentTextEditingValue.selection;
-                print(editableTextState.currentTextEditingValue.text.substring(range.start, range.end));
-                print(range);
-              },
-            ),
-          ],
-        );
-
     if (selectable) {
       return SelectableText.rich(
         TextSpan(children: children),
@@ -154,7 +133,6 @@ class SimpleRichText extends StatelessWidget {
         textAlign: textAlign ?? TextAlign.justify,
         textScaleFactor: textScaleFactor ?? MediaQuery.of(context).textScaleFactor,
         scrollPhysics: const NeverScrollableScrollPhysics(),
-        contextMenuBuilder: contextMenuBuilder,
       );
     }
 
