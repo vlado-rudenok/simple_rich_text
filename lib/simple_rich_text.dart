@@ -125,26 +125,24 @@ class SimpleRichText extends StatelessWidget {
     ];
 
     searchController?.updateChildren(children.whereType<GlobalSpan>().toList());
-
-    if (selectable) {
-      return SelectableText.rich(
-        TextSpan(children: children),
-        maxLines: maxLines,
-        textAlign: textAlign ?? TextAlign.justify,
-        textScaleFactor: textScaleFactor ?? MediaQuery.of(context).textScaleFactor,
-        scrollPhysics: const NeverScrollableScrollPhysics(),
-      );
-    }
-
-    return RichText(
-      text: TextSpan(children: children),
+    final textWidget = Text.rich(
+      TextSpan(children: children),
       maxLines: maxLines,
       textAlign: textAlign ?? TextAlign.justify,
       textScaleFactor: textScaleFactor ?? MediaQuery.of(context).textScaleFactor,
     );
+
+    if (selectable) {
+      return SelectionArea(child: textWidget);
+    }
+
+    return textWidget;
   }
 
-  Iterable<TextSpan> _prepareText(MapEntry<int, String> entry, BuildContext context) {
+  Iterable<TextSpan> _prepareText(
+    MapEntry<int, String> entry,
+    BuildContext context,
+  ) {
     var text = entry.value.highlightAllSearchTerms(
       terms: searchTerms,
       condition: (term) => term.length > 2,
@@ -267,7 +265,9 @@ class SimpleRichText extends StatelessWidget {
                 fontSize: 12,
               ),
             ),
-            WidgetSpan(child: SizedBox(width: 0, height: entry.key > 0 ? 28 : 0)),
+            WidgetSpan(
+              child: SizedBox(width: 0, height: entry.key > 0 ? 28 : 0),
+            ),
           ],
           const WidgetSpan(child: SizedBox(width: 8)),
         ],

@@ -7,7 +7,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
         final data = MediaQuery.of(context);
         return MediaQuery(
           data: data.copyWith(textScaleFactor: 3),
-          child: child,
+          child: child!,
         );
       },
 
