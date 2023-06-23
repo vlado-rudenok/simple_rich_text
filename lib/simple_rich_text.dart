@@ -1,7 +1,9 @@
 library simple_rich_text;
 
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
 import 'src/error.dart';
 import 'src/extensions_string.dart';
@@ -40,50 +42,49 @@ class SimpleRichTextSearchController {
   int get length => _globalKeys.length;
 }
 
-/// Widget that renders a string with sub-string highlighting.
-class SimpleRichText extends StatelessWidget {
-  const SimpleRichText({
-    required this.text,
-    required this.style,
-    super.key,
+class SimpleRichTextConfig {
+  SimpleRichTextConfig({
     this.allowNonClosedTags = false,
     this.appendParagraphNumber = true,
     this.chars,
-    this.contextMenuItems = const [],
-    this.globalSearchTerm,
-    this.leadingText,
     this.maxLines,
-    this.searchController,
-    this.searchTerms = const [],
     this.selectable = true,
     this.textAlign,
     this.textOverflow,
     this.textScaleFactor,
-    this.trailingText,
   });
-
-  /// User-defined chars, default chars set is [*~/_\\]
-  final String? chars;
-
-  /// controller for search
-  final SimpleRichTextSearchController? searchController;
-
-  /// controller for search
-  final GlobalSearchTerm? globalSearchTerm;
-
-  /// controller for search
   final bool appendParagraphNumber;
+  final bool selectable;
+  final double? textScaleFactor;
+  final int? maxLines;
+  final TextAlign? textAlign;
+  final TextOverflow? textOverflow;
 
   /// allow non-closed tags (e.g., "this is *bold" because no closing * character), otherwise exception is thrown
   final bool allowNonClosedTags;
 
-  /// An optional maximum number of lines for the text to span, wrapping if necessary.
-  /// If the text exceeds the given number of lines, it will be truncated according
-  /// to overflow.
-  ///
-  /// If this is 1, text will not wrap. Otherwise, text will be wrapped at the
-  /// edge of the box.
-  final int? maxLines;
+  /// User-defined chars, default chars set is [*~/_\\]
+  final String? chars;
+}
+
+/// Widget that renders a string with sub-string highlighting.
+class SimpleRichText extends HookWidget {
+  const SimpleRichText({
+    required this.text,
+    required this.config,
+    required this.style,
+    super.key,
+    this.copyContextItemReplacement,
+    this.globalSearchTerm,
+    this.leadingText,
+    this.searchController,
+    this.searchTerms = const [],
+    this.trailingText,
+  });
+
+  /// controller for search
+  final SimpleRichTextSearchController? searchController;
+  final GlobalSearchTerm? globalSearchTerm;
 
   /// optional leading TextSpan
   final TextSpan? leadingText;
@@ -91,32 +92,17 @@ class SimpleRichText extends StatelessWidget {
   /// optional trailing TextSpan
   final TextSpan? trailingText;
 
-  /// The {TextStyle} of the {SimpleRichText.text} that isn't highlighted.
-  final TextStyle style;
-
   /// The String to be displayed using rich text.
   final List<String> text;
-
-  /// How the text should be aligned horizontally.
-  final TextAlign? textAlign;
-
-  /// How visual overflow should be handled.
-  final TextOverflow? textOverflow;
-
-  /// The number of font pixels for each logical pixel.
-  ///
-  /// For example, if the text scale factor is 1.5, text will be 50% larger than
-  /// the specified font size.
-  final double? textScaleFactor;
-
   final List<String> searchTerms;
-
-  final List<ContextMenuButtonItem> contextMenuItems;
-
-  final bool selectable;
+  final SimpleRichTextConfig config;
+  final TextStyle style;
+  final (String label, void Function(String?) onTap)? copyContextItemReplacement;
 
   @override
   Widget build(BuildContext context) {
+    final selectedText = useRef<String?>(null);
+
     final formatted = text.asMap().entries.map((e) => _prepareText(e, context)).flattened;
     final children = [
       if (leadingText != null) leadingText!,
@@ -127,13 +113,36 @@ class SimpleRichText extends StatelessWidget {
     searchController?.updateChildren(children.whereType<GlobalSpan>().toList());
     final textWidget = Text.rich(
       TextSpan(children: children),
-      maxLines: maxLines,
-      textAlign: textAlign ?? TextAlign.justify,
-      textScaleFactor: textScaleFactor ?? MediaQuery.of(context).textScaleFactor,
+      maxLines: config.maxLines,
+      textAlign: config.textAlign ?? TextAlign.justify,
+      textScaleFactor: config.textScaleFactor ?? MediaQuery.of(context).textScaleFactor,
     );
 
-    if (selectable) {
-      return SelectionArea(child: textWidget);
+    if (config.selectable) {
+      return SelectionArea(
+        onSelectionChanged: (value) => selectedText.value = value?.plainText,
+        contextMenuBuilder: (context, state) {
+          final copy = copyContextItemReplacement == null
+              ? null
+              : ContextMenuButtonItem(
+                  type: ContextMenuButtonType.copy,
+                  onPressed: () async {
+                    copyContextItemReplacement!.$2(selectedText.value);
+                    state.hideToolbar(false);
+                  },
+                );
+          var items = state.contextMenuButtonItems;
+
+          if (copy != null) {
+            items = items.where((element) => element.type != ContextMenuButtonType.copy).toList()..insert(0, copy);
+          }
+          return AdaptiveTextSelectionToolbar.buttonItems(
+            anchors: state.contextMenuAnchors,
+            buttonItems: items,
+          );
+        },
+        child: textWidget,
+      );
     }
 
     return textWidget;
@@ -163,7 +172,7 @@ class SimpleRichText extends StatelessWidget {
 
     final items = linesList.asMap().entries.map(
       (entry) {
-        final spansList = entry.value.splitWithChars(chars);
+        final spansList = entry.value.splitWithChars(config.chars);
         if (spansList.length > 1) {
           log('Line ${entry.key + 1}: ${entry.value}');
           log('len=${spansList.length}: $spansList');
@@ -243,7 +252,7 @@ class SimpleRichText extends StatelessWidget {
             },
           );
 
-          if (!allowNonClosedTags && set.isNotEmpty) {
+          if (!config.allowNonClosedTags && set.isNotEmpty) {
             throw SimpleRichTextError('not closed: $set');
           }
           return [
@@ -257,7 +266,7 @@ class SimpleRichText extends StatelessWidget {
     return [
       TextSpan(
         children: [
-          if (appendParagraphNumber) ...[
+          if (config.appendParagraphNumber) ...[
             TextSpan(
               text: '\n${entry.key + 1}',
               style: style.copyWith(
