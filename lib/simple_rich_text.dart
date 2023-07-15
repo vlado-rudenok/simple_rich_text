@@ -1,7 +1,6 @@
 library simple_rich_text;
 
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
@@ -74,7 +73,7 @@ class SimpleRichText extends HookWidget {
     required this.config,
     required this.style,
     super.key,
-    this.copyContextItemReplacement,
+    this.onCopy,
     this.globalSearchTerm,
     this.leadingText,
     this.searchController,
@@ -97,7 +96,7 @@ class SimpleRichText extends HookWidget {
   final List<String> searchTerms;
   final SimpleRichTextConfig config;
   final TextStyle style;
-  final (String label, void Function(String?) onTap)? copyContextItemReplacement;
+  final void Function(String?)? onCopy;
 
   @override
   Widget build(BuildContext context) {
@@ -122,12 +121,12 @@ class SimpleRichText extends HookWidget {
       return SelectionArea(
         onSelectionChanged: (value) => selectedText.value = value?.plainText,
         contextMenuBuilder: (context, state) {
-          final copy = copyContextItemReplacement == null
+          final copy = onCopy == null
               ? null
               : ContextMenuButtonItem(
                   type: ContextMenuButtonType.copy,
                   onPressed: () async {
-                    copyContextItemReplacement!.$2(selectedText.value);
+                    onCopy?.call(selectedText.value);
                     state.hideToolbar(false);
                   },
                 );
@@ -268,7 +267,7 @@ class SimpleRichText extends HookWidget {
         children: [
           if (config.appendParagraphNumber) ...[
             TextSpan(
-              text: '\n${entry.key + 1}',
+              text: '\n${entry.key + 1} ',
               style: style.copyWith(
                 color: Colors.grey,
                 fontSize: 12,
@@ -278,7 +277,7 @@ class SimpleRichText extends HookWidget {
               child: SizedBox(width: 0, height: entry.key > 0 ? 28 : 0),
             ),
           ],
-          const WidgetSpan(child: SizedBox(width: 8)),
+          const WidgetSpan(child: SizedBox(width: 4)),
         ],
         style: style.copyWith(fontSize: 15),
       ),
