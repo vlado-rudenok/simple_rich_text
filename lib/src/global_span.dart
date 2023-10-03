@@ -13,7 +13,7 @@ class GlobalSpan extends TextSpan {
                   size: Size.zero,
                 ),
               ),
-            child
+            child,
           ],
         );
 

@@ -114,7 +114,9 @@ class SimpleRichText extends HookWidget {
       TextSpan(children: children),
       maxLines: config.maxLines,
       textAlign: config.textAlign ?? TextAlign.justify,
-      textScaleFactor: config.textScaleFactor ?? MediaQuery.of(context).textScaleFactor,
+      textScaler: config.textScaleFactor != null
+          ? TextScaler.linear(config.textScaleFactor!)
+          : MediaQuery.of(context).textScaler,
     );
 
     if (config.selectable) {
@@ -281,7 +283,7 @@ class SimpleRichText extends HookWidget {
         ],
         style: style.copyWith(fontSize: 15),
       ),
-      ...items
+      ...items,
     ];
   }
 

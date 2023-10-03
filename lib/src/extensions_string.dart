@@ -118,8 +118,8 @@ extension Splitable on String {
     }
 
     return {
-      for (var pair in pairs)
-        if (pair.length == 2) pair.first.trim(): pair.last.trim()
+      for (final pair in pairs)
+        if (pair.length == 2) pair.first.trim(): pair.last.trim(),
     };
   }
 
