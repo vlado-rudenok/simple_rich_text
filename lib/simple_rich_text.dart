@@ -2,7 +2,6 @@ library simple_rich_text;
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 
 import 'src/error.dart';
 import 'src/extensions_string.dart';
@@ -19,41 +18,15 @@ class GlobalSearchTerm {
   final List<String> searchTerms;
 }
 
-class SimpleRichTextSearchController {
-  SimpleRichTextSearchController({required this.onUpdate});
-  List<GlobalKey> _globalKeys = [];
-
-  final void Function() onUpdate;
-
-  void updateChildren(List<GlobalSpan> children) {
-    _globalKeys = children.map((e) => e.globalKey).whereType<GlobalKey>().toList();
-    onUpdate();
-  }
-
-  GlobalKey? keyForIndex(int index) {
-    if (index >= _globalKeys.length) {
-      return null;
-    }
-
-    return _globalKeys[index];
-  }
-
-  int get length => _globalKeys.length;
-}
-
 class SimpleRichTextConfig {
   SimpleRichTextConfig({
     this.allowNonClosedTags = false,
-    this.appendParagraphNumber = true,
     this.chars,
     this.maxLines,
-    this.selectable = true,
     this.textAlign,
     this.textOverflow,
     this.textScaleFactor,
   });
-  final bool appendParagraphNumber;
-  final bool selectable;
   final double? textScaleFactor;
   final int? maxLines;
   final TextAlign? textAlign;
@@ -67,22 +40,20 @@ class SimpleRichTextConfig {
 }
 
 /// Widget that renders a string with sub-string highlighting.
-class SimpleRichText extends HookWidget {
+class SimpleRichText extends StatelessWidget {
   const SimpleRichText({
     required this.text,
     required this.config,
     required this.style,
     super.key,
-    this.onCopy,
+    this.onUpdate,
     this.globalSearchTerm,
     this.leadingText,
-    this.searchController,
     this.searchTerms = const [],
     this.trailingText,
   });
 
   /// controller for search
-  final SimpleRichTextSearchController? searchController;
   final GlobalSearchTerm? globalSearchTerm;
 
   /// optional leading TextSpan
@@ -92,79 +63,48 @@ class SimpleRichText extends HookWidget {
   final TextSpan? trailingText;
 
   /// The String to be displayed using rich text.
-  final List<String> text;
+  final String text;
   final List<String> searchTerms;
   final SimpleRichTextConfig config;
   final TextStyle style;
-  final void Function(String?)? onCopy;
+  final void Function(List<GlobalKey>)? onUpdate;
 
   @override
   Widget build(BuildContext context) {
-    final selectedText = useRef<String?>(null);
-
-    final formatted = text.asMap().entries.map((e) => _prepareText(e, context)).flattened;
+    final formatted = _prepareText(text, context);
     final children = [
       if (leadingText != null) leadingText!,
       ...formatted,
       if (trailingText != null) trailingText!,
     ];
 
-    searchController?.updateChildren(children.whereType<GlobalSpan>().toList());
+    onUpdate?.call(children.whereType<GlobalSpan>().map((e) => e.globalKey).whereType<GlobalKey>().toList());
+
+    final textSpan = TextSpan(children: children);
+
     final textWidget = Text.rich(
-      TextSpan(children: children),
+      textSpan,
       maxLines: config.maxLines,
       textAlign: config.textAlign ?? TextAlign.justify,
-      textScaler: config.textScaleFactor != null
-          ? TextScaler.linear(config.textScaleFactor!)
-          : MediaQuery.of(context).textScaler,
+      textScaleFactor: config.textScaleFactor,
     );
-
-    if (config.selectable) {
-      return SelectionArea(
-        onSelectionChanged: (value) => selectedText.value = value?.plainText,
-        contextMenuBuilder: (context, state) {
-          final copy = onCopy == null
-              ? null
-              : ContextMenuButtonItem(
-                  type: ContextMenuButtonType.copy,
-                  onPressed: () async {
-                    onCopy?.call(selectedText.value);
-                    state.hideToolbar(false);
-                  },
-                );
-          var items = state.contextMenuButtonItems;
-
-          if (copy != null) {
-            items = items.where((element) => element.type != ContextMenuButtonType.copy).toList()..insert(0, copy);
-          }
-          return AdaptiveTextSelectionToolbar.buttonItems(
-            anchors: state.contextMenuAnchors,
-            buttonItems: items,
-          );
-        },
-        child: textWidget,
-      );
-    }
 
     return textWidget;
   }
 
   Iterable<TextSpan> _prepareText(
-    MapEntry<int, String> entry,
+    String entry,
     BuildContext context,
   ) {
-    var text = entry.value.highlightAllSearchTerms(
-      terms: searchTerms,
-      condition: (term) => term.length > 2,
-    );
+    if (entry.isEmpty) {
+      return [const TextSpan()];
+    }
+
+    var text = entry.highlightAllSearchTerms(terms: searchTerms);
 
     if (searchTerms.isEmpty && globalSearchTerm != null && text.contains(globalSearchTerm!.line)) {
       final terms = globalSearchTerm?.searchTerms ?? [];
       text = text.highlightAllSearchTerms(terms: terms);
-    }
-
-    if (text.isEmpty) {
-      return [const TextSpan()];
     }
 
     final set = <String>{};
@@ -174,10 +114,6 @@ class SimpleRichText extends HookWidget {
     final items = linesList.asMap().entries.map(
       (entry) {
         final spansList = entry.value.splitWithChars(config.chars);
-        if (spansList.length > 1) {
-          log('Line ${entry.key + 1}: ${entry.value}');
-          log('len=${spansList.length}: $spansList');
-        }
         if (spansList.length == 1) {
           return [
             TextSpan(text: entry.value, style: style),
@@ -204,9 +140,9 @@ class SimpleRichText extends HookWidget {
                     style: style,
                     acceptNext: acceptNext,
                   );
-                  acceptNext = item.item2;
+                  acceptNext = item.$2;
                   index++;
-                  return [if (item.item1 != null) item.item1!];
+                  return [if (item.$1 != null) item.$1!];
                 }
                 return <TextSpan>[];
               } else {
@@ -241,8 +177,8 @@ class SimpleRichText extends HookWidget {
                     style: style,
                     acceptNext: acceptNext,
                   );
-                  toggled = toggledMarker.item1;
-                  acceptNext = toggledMarker.item2;
+                  toggled = toggledMarker.$1;
+                  acceptNext = toggledMarker.$2;
                   index++;
                 } else {
                   toggled = null;
@@ -264,27 +200,7 @@ class SimpleRichText extends HookWidget {
       },
     ).flattened;
 
-    return [
-      TextSpan(
-        children: [
-          if (config.appendParagraphNumber) ...[
-            TextSpan(
-              text: '\n${entry.key + 1} ',
-              style: style.copyWith(
-                color: Colors.grey,
-                fontSize: 12,
-              ),
-            ),
-            WidgetSpan(
-              child: SizedBox(width: 0, height: entry.key > 0 ? 28 : 0),
-            ),
-          ],
-          const WidgetSpan(child: SizedBox(width: 4)),
-        ],
-        style: style.copyWith(fontSize: 15),
-      ),
-      ...items,
-    ];
+    return items;
   }
 
   bool _ifNotLastLine(int k, List<String> linesList) => k < linesList.length - 1;

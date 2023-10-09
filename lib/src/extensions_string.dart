@@ -1,7 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:tuple/tuple.dart';
 
 import 'colors.dart';
 import 'commands_handler.dart';
@@ -13,7 +12,7 @@ import 'logger.dart';
 extension Splitable on String {
   List<String> splitWithChars(String? chars) => split(
         RegExp(
-          chars ?? '[~*%`^]',
+          chars ?? '[~*%`^@]',
         ),
       );
 
@@ -74,7 +73,7 @@ extension Splitable on String {
     }
   }
 
-  Tuple2<TextSpan?, bool> toggleMarker({
+  (TextSpan?, bool) toggleMarker({
     required String line,
     required int index,
     required BuildContext context,
@@ -92,7 +91,7 @@ extension Splitable on String {
         commandsList: commandsList,
         style: style,
       );
-      return Tuple2(item, false);
+      return (item, false);
     } else {
       if (acceptNext) {
         if (set.contains(this)) {
@@ -104,7 +103,7 @@ extension Splitable on String {
         }
       }
 
-      return const Tuple2(null, true);
+      return const (null, true);
     }
   }
 
@@ -134,7 +133,7 @@ extension Splitable on String {
           ? Colors.black
           : map.containsKey('color')
               ? parseColor(map['color']!)
-              : set.contains('`')
+              : (set.contains('`') || set.contains('@'))
                   ? Colors.grey
                   : style.color,
       decoration: set.contains('_') ? TextDecoration.underline : TextDecoration.none,
@@ -170,18 +169,15 @@ extension Splitable on String {
 
   String highlightAllSearchTerms({
     required List<String> terms,
-    bool Function(String)? condition,
   }) {
     var output = this;
     for (final term in terms.sorted((a, b) => b.length.compareTo(a.length)).asMap().entries) {
-      if (condition?.call(term.value) ?? true) {
-        if (term.key == 0 && toLowerCase().contains(term.value)) {
-          output = output.highlightSearchTerm(term.value);
-          break;
-        }
-
+      if (term.key == 0 && toLowerCase().contains(term.value)) {
         output = output.highlightSearchTerm(term.value);
+        break;
       }
+
+      output = output.highlightSearchTerm(term.value);
     }
 
     return output;
