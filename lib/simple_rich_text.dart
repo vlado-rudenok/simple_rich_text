@@ -7,16 +7,11 @@ import 'src/error.dart';
 import 'src/extensions_string.dart';
 import 'src/global_span.dart';
 import 'src/logger.dart';
+import 'src/search_term.dart';
 
-class GlobalSearchTerm {
-  const GlobalSearchTerm({
-    required this.line,
-    required this.searchTerms,
-  });
+export 'src/search_term.dart';
 
-  final String line;
-  final List<String> searchTerms;
-}
+class SearchTermType {}
 
 class SimpleRichTextConfig {
   SimpleRichTextConfig({
@@ -47,14 +42,10 @@ class SimpleRichText extends StatelessWidget {
     required this.style,
     super.key,
     this.onUpdate,
-    this.globalSearchTerm,
     this.leadingText,
-    this.searchTerms = const [],
+    this.searchTerm,
     this.trailingText,
   });
-
-  /// controller for search
-  final GlobalSearchTerm? globalSearchTerm;
 
   /// optional leading TextSpan
   final TextSpan? leadingText;
@@ -64,7 +55,8 @@ class SimpleRichText extends StatelessWidget {
 
   /// The String to be displayed using rich text.
   final String text;
-  final List<String> searchTerms;
+  // ignore: strict_raw_type
+  final Object? searchTerm;
   final SimpleRichTextConfig config;
   final TextStyle style;
   final void Function(List<GlobalKey>)? onUpdate;
@@ -101,12 +93,17 @@ class SimpleRichText extends StatelessWidget {
     }
 
     String text;
+    final searchTerm = this.searchTerm;
 
-    if (searchTerms.isEmpty && globalSearchTerm != null && entry.contains(globalSearchTerm!.line)) {
-      final terms = globalSearchTerm?.searchTerms ?? [];
-      text = entry.highlightAllSearchTerms(terms: terms);
-    } else if (searchTerms.isNotEmpty) {
-      text = entry.highlightAllSearchTerms(terms: searchTerms);
+    if (searchTerm is LocalAllMatchTerm) {
+      final terms = searchTerm.term;
+      text = entry.highlightAllMatchedWordFor(terms: terms);
+    } else if (searchTerm is LocalExactMatchTerm) {
+      final terms = searchTerm.term;
+      text = entry.highlightExactMathFor(terms);
+    } else if (searchTerm is GlobalSearchTerm && entry.contains(searchTerm.line)) {
+      final terms = searchTerm.term;
+      text = entry.highlightAllMatchedWordFor(terms: terms);
     } else {
       text = entry;
     }

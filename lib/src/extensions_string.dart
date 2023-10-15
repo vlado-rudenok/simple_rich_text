@@ -161,7 +161,7 @@ extension Splitable on String {
     return textStyle;
   }
 
-  String highlightAllSearchTerms({
+  String highlightAllMatchedWordFor({
     required List<String> terms,
   }) =>
       replaceAllMapped(
@@ -170,5 +170,10 @@ extension Splitable on String {
           final matchedWord = match.group(0)!;
           return '^{searchResult:search_result}$matchedWord^';
         },
+      );
+
+  String highlightExactMathFor(String term) => replaceAllMapped(
+        RegExp(term, caseSensitive: false),
+        (match) => '^{searchResult:search_result}${match.group(0)}^',
       );
 }
