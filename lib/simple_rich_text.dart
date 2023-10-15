@@ -100,11 +100,15 @@ class SimpleRichText extends StatelessWidget {
       return [const TextSpan()];
     }
 
-    var text = entry.highlightAllSearchTerms(terms: searchTerms);
+    String text;
 
-    if (searchTerms.isEmpty && globalSearchTerm != null && text.contains(globalSearchTerm!.line)) {
+    if (searchTerms.isEmpty && globalSearchTerm != null && entry.contains(globalSearchTerm!.line)) {
       final terms = globalSearchTerm?.searchTerms ?? [];
-      text = text.highlightAllSearchTerms(terms: terms);
+      text = entry.highlightAllSearchTerms(terms: terms);
+    } else if (searchTerms.isNotEmpty) {
+      text = entry.highlightAllSearchTerms(terms: searchTerms);
+    } else {
+      text = entry;
     }
 
     final set = <String>{};

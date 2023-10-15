@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -162,24 +161,14 @@ extension Splitable on String {
     return textStyle;
   }
 
-  String highlightSearchTerm(String term) => replaceAllMapped(
-        RegExp(term, caseSensitive: false),
-        (match) => '^{searchResult:search_result}${match.group(0)}^',
-      );
-
   String highlightAllSearchTerms({
     required List<String> terms,
-  }) {
-    var output = this;
-    for (final term in terms.sorted((a, b) => b.length.compareTo(a.length)).asMap().entries) {
-      if (term.key == 0 && toLowerCase().contains(term.value)) {
-        output = output.highlightSearchTerm(term.value);
-        break;
-      }
-
-      output = output.highlightSearchTerm(term.value);
-    }
-
-    return output;
-  }
+  }) =>
+      replaceAllMapped(
+        RegExp([terms.join(' '), ...terms].map((word) => '\\b$word\\b').join('|'), caseSensitive: false),
+        (match) {
+          final matchedWord = match.group(0)!;
+          return '^{searchResult:search_result}$matchedWord^';
+        },
+      );
 }
