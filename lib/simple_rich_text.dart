@@ -42,16 +42,8 @@ class SimpleRichText extends StatelessWidget {
     required this.style,
     super.key,
     this.onUpdate,
-    this.leadingText,
     this.searchTerm,
-    this.trailingText,
   });
-
-  /// optional leading TextSpan
-  final TextSpan? leadingText;
-
-  /// optional trailing TextSpan
-  final TextSpan? trailingText;
 
   /// The String to be displayed using rich text.
   final String text;
@@ -65,9 +57,7 @@ class SimpleRichText extends StatelessWidget {
     final formatted = _prepareText(text, context);
     final children = [
       if (config.textIndent > 0) WidgetSpan(child: SizedBox(width: config.textIndent)),
-      if (leadingText != null) leadingText!,
       ...formatted,
-      if (trailingText != null) trailingText!,
     ];
 
     onUpdate?.call(children.whereType<GlobalSpan>().map((e) => e.globalKey).whereType<GlobalKey>().toList());
