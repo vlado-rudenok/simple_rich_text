@@ -21,6 +21,7 @@ class SimpleRichTextConfig {
     this.textAlign,
     this.textOverflow,
     this.textScaleFactor,
+    this.textIndent = 0,
   });
   final double? textScaleFactor;
   final int? maxLines;
@@ -29,9 +30,8 @@ class SimpleRichTextConfig {
 
   /// allow non-closed tags (e.g., "this is *bold" because no closing * character), otherwise exception is thrown
   final bool allowNonClosedTags;
-
-  /// User-defined chars, default chars set is [*~/_\\]
   final String? chars;
+  final double textIndent;
 }
 
 /// Widget that renders a string with sub-string highlighting.
@@ -55,7 +55,6 @@ class SimpleRichText extends StatelessWidget {
 
   /// The String to be displayed using rich text.
   final String text;
-  // ignore: strict_raw_type
   final Object? searchTerm;
   final SimpleRichTextConfig config;
   final TextStyle style;
@@ -65,6 +64,7 @@ class SimpleRichText extends StatelessWidget {
   Widget build(BuildContext context) {
     final formatted = _prepareText(text, context);
     final children = [
+      if (config.textIndent > 0) WidgetSpan(child: SizedBox(width: config.textIndent)),
       if (leadingText != null) leadingText!,
       ...formatted,
       if (trailingText != null) trailingText!,
