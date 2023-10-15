@@ -66,12 +66,11 @@ doc/api/
 
 # Flutter/Dart/Pub related
 **/doc/api/
-.dart_tool/
 .flutter-plugins
-.packages
+.flutter-plugins-dependencies
 .pub-cache/
-.pub/
 /build/
+pubspec.lock
 
 # Android related
 **/android/**/gradle-wrapper.jar

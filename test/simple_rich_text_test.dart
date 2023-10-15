@@ -8,9 +8,15 @@ void main() {
   // Define a test. The TestWidgets function also provides a WidgetTester
   // to work with. The WidgetTester allows you to build and interact
   // with widgets in the test environment.
-  testWidgets('test the thing!', (WidgetTester tester) async {
-    await tester.pumpWidget(Directionality(
-        child: SimpleRichText('This is *bold*'),
-        textDirection: TextDirection.ltr));
+  testWidgets('test the thing!', (tester) async {
+    await tester.pumpWidget(
+      const Directionality(
+        textDirection: TextDirection.ltr,
+        child: SimpleRichText(
+          text: ['This is *bold*'],
+          style: TextStyle(),
+        ),
+      ),
+    );
   });
 }
