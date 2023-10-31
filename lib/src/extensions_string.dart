@@ -165,7 +165,10 @@ extension Splitable on String {
     required List<String> terms,
   }) =>
       replaceAllMapped(
-        RegExp([terms.join(' '), ...terms].map((word) => '\\b$word\\b').join('|'), caseSensitive: false),
+        RegExp(
+          terms.map(RegExp.escape).map((e) => e.contains(r'\') ? e : '\\b$e\\b').join('|'),
+          caseSensitive: false,
+        ),
         (match) {
           final matchedWord = match.group(0)!;
           return '^{searchResult:search_result}$matchedWord^';
@@ -173,7 +176,7 @@ extension Splitable on String {
       );
 
   String highlightExactMathFor(String term) => replaceAllMapped(
-        RegExp(term, caseSensitive: false),
+        RegExp(RegExp.escape(term), caseSensitive: false),
         (match) => '^{searchResult:search_result}${match.group(0)}^',
       );
 }
