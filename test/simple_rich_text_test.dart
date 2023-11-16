@@ -10,11 +10,12 @@ void main() {
   // with widgets in the test environment.
   testWidgets('test the thing!', (tester) async {
     await tester.pumpWidget(
-      const Directionality(
+      Directionality(
         textDirection: TextDirection.ltr,
         child: SimpleRichText(
-          text: ['This is *bold*'],
-          style: TextStyle(),
+          text: 'This is *bold*',
+          style: const TextStyle(),
+          config: SimpleRichTextConfig(),
         ),
       ),
     );

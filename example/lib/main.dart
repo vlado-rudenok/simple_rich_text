@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+// ignore: depend_on_referenced_packages
 import 'package:simple_rich_text/simple_rich_text.dart';
 
 void main() {
@@ -32,24 +33,19 @@ class MyApp extends StatelessWidget {
       builder: (context, child) {
         final data = MediaQuery.of(context);
         return MediaQuery(
-          data: data.copyWith(textScaleFactor: 3),
+          data: data.copyWith(textScaler: const TextScaler.linear(3)),
           child: child!,
         );
       },
 
-      home: const Scaffold(
+      home: Scaffold(
         // , chars: r"[*]"
 //          backgroundColor: Colors.grey[300],
         body: Center(
           child: SimpleRichText(
-            text: [text],
-            maxLines: 20,
-            leadingText: TextSpan(text: 'PRE', style: TextStyle(color: Colors.purple)),
-            trailingText: TextSpan(text: 'POST', style: TextStyle(color: Colors.purple)),
-            style: TextStyle(color: Colors.orange),
-            textAlign: TextAlign.center,
-            textOverflow: TextOverflow.ellipsis,
-            textScaleFactor: 1.5,
+            text: text,
+            style: const TextStyle(color: Colors.orange),
+            config: SimpleRichTextConfig(),
           ),
         ),
       ),

@@ -23,6 +23,7 @@ class SimpleRichTextConfig {
     this.textScaleFactor,
     this.textIndent = 0,
   });
+
   final double? textScaleFactor;
   final int? maxLines;
   final TextAlign? textAlign;
@@ -68,7 +69,7 @@ class SimpleRichText extends StatelessWidget {
       textSpan,
       maxLines: config.maxLines,
       textAlign: config.textAlign ?? TextAlign.justify,
-      textScaleFactor: config.textScaleFactor,
+      textScaler: config.textScaleFactor != null ? TextScaler.linear(config.textScaleFactor!) : TextScaler.noScaling,
     );
 
     return textWidget;
