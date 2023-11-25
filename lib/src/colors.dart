@@ -27,9 +27,16 @@ const Map<String, int> colorMap = {
 Color parseColor(String color) {
   final v = colorMap[color];
   if (v == null) {
-    return Colors.red;
+    return fromHex(color);
   } else {
     final out = Color((0xff << 24) | v);
     return out;
   }
+}
+
+Color fromHex(String hexString) {
+  final buffer = StringBuffer();
+  if (hexString.length == 6 || hexString.length == 7) buffer.write('ff');
+  buffer.write(hexString.replaceFirst('#', ''));
+  return Color(int.parse(buffer.toString(), radix: 16));
 }

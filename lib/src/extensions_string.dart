@@ -9,11 +9,7 @@ import 'global_span.dart';
 import 'logger.dart';
 
 extension Splitable on String {
-  List<String> splitWithChars(String? chars) => split(
-        RegExp(
-          chars ?? '[~*%`^@]',
-        ),
-      );
+  List<String> splitWithChars(String chars) => split(RegExp(chars));
 
   List<String> splitIntoLines() {
     final containsNewLine = contains(r'\n');

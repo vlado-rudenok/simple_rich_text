@@ -11,12 +11,28 @@ import 'src/search_term.dart';
 
 export 'src/search_term.dart';
 
-class SearchTermType {}
+enum SimpleRichTextMarkdown {
+  asterisk('*'),
+  atSymbol('@'),
+  backtick('`'),
+  caret('^'),
+  filledCircle('●'),
+  percentageSign('%'),
+  tilde('~');
+
+  const SimpleRichTextMarkdown(this.rawValue);
+
+  final String rawValue;
+
+  static String get allChars => values.map((e) => e.rawValue).join();
+  static String get allCharsPattern => '[$allChars]';
+
+  static String backgroundColor(String color) => '{backgroundColor:$color}';
+}
 
 class SimpleRichTextConfig {
   SimpleRichTextConfig({
     this.allowNonClosedTags = false,
-    this.chars,
     this.maxLines,
     this.textAlign,
     this.textOverflow,
@@ -31,7 +47,6 @@ class SimpleRichTextConfig {
 
   /// allow non-closed tags (e.g., "this is *bold" because no closing * character), otherwise exception is thrown
   final bool allowNonClosedTags;
-  final String? chars;
   final double textIndent;
 }
 
@@ -105,7 +120,7 @@ class SimpleRichText extends StatelessWidget {
 
     final items = linesList.asMap().entries.map(
       (entry) {
-        final spansList = entry.value.splitWithChars(config.chars);
+        final spansList = entry.value.splitWithChars(SimpleRichTextMarkdown.allCharsPattern);
         if (spansList.length == 1) {
           return [
             TextSpan(text: entry.value, style: style),
