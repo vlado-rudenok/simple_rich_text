@@ -24,7 +24,8 @@ enum SimpleRichTextMarkdown {
 
   final String rawValue;
 
-  static String get allChars => values.map((e) => e.rawValue).join();
+  static Iterable<String> get allCharsList => values.map((e) => e.rawValue);
+  static String get allChars => allCharsList.join();
   static String get allCharsPattern => '[$allChars]';
 
   static String backgroundColor(String color) => '{backgroundColor:$color}';
