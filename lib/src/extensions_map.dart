@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'commands.dart';
+import 'models/commands.dart';
 
 extension Convertible on Map<String, String> {
   TextDecorationStyle? parseDecorationStyle() {
