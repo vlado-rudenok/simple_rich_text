@@ -26,6 +26,7 @@ extension Convertible on Map<String, String> {
 
   bool containsCommands() =>
       containsKey(Commands.popRoute.rawValue) ||
+      containsKey(Commands.tap.rawValue) ||
       containsKey(Commands.pushRoute.rawValue) ||
       containsKey(Commands.replaceRoute.rawValue) ||
       containsKey(Commands.openLink.rawValue);

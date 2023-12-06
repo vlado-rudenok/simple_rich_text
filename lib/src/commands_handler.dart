@@ -11,6 +11,7 @@ class CommandHandler {
     required String caption,
     required Map<String, String> map,
     required BuildContext context,
+    required void Function(String)? onTap,
   }) async {
     if (map.containsKey(Commands.pushRoute.rawValue)) {
       await CommandHandler._onCommandPush(
@@ -29,6 +30,8 @@ class CommandHandler {
         value: map[Commands.openLink.rawValue]!,
         caption: caption,
       );
+    } else if (map.containsKey(Commands.tap.rawValue)) {
+      onTap?.call(map[Commands.tap.rawValue]!);
     } else {
       CommandHandler._onCommandPop(
         caption: caption,

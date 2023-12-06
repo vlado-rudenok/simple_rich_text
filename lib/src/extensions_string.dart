@@ -29,6 +29,7 @@ extension Splitable on String {
     required Set<String> set,
     required String? commandsList,
     required TextStyle style,
+    required void Function(String)? onTap,
   }) {
     log('wrap: $this set=$set');
 
@@ -57,13 +58,17 @@ extension Splitable on String {
                 caption: this,
                 map: map,
                 context: context,
+                onTap: onTap,
               ),
         style: textStyle,
       );
     } else {
       return GlobalSpan(
         globalKey: map.containsKey('searchResult') ? GlobalKey() : null,
-        child: TextSpan(text: this, style: textStyle),
+        child: TextSpan(
+          text: this,
+          style: textStyle,
+        ),
       );
     }
   }
@@ -76,6 +81,7 @@ extension Splitable on String {
     required String? commandsList,
     required TextStyle style,
     required bool acceptNext,
+    required void Function(String)? onTap,
   }) {
     if (this == r'\') {
       final c = line.substring(index + 1, index + 2);
@@ -85,6 +91,7 @@ extension Splitable on String {
         set: set,
         commandsList: commandsList,
         style: style,
+        onTap: onTap,
       );
       return (item, false);
     } else {

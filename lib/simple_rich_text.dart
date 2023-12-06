@@ -28,7 +28,7 @@ enum SimpleRichTextMarkdown {
   static String get allChars => allCharsList.join();
   static String get allCharsPattern => '[$allChars]';
 
-  static String backgroundColor(String color) => '{backgroundColor:$color}';
+  static String backgroundColor(String color, String id) => '{tap:$id;backgroundColor:$color}';
 }
 
 class SimpleRichTextConfig {
@@ -60,6 +60,7 @@ class SimpleRichText extends StatelessWidget {
     super.key,
     this.onUpdate,
     this.searchTerm,
+    this.onTap,
   });
 
   /// The String to be displayed using rich text.
@@ -68,6 +69,7 @@ class SimpleRichText extends StatelessWidget {
   final SimpleRichTextConfig config;
   final TextStyle style;
   final void Function(List<GlobalKey>)? onUpdate;
+  final void Function(String)? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -147,6 +149,7 @@ class SimpleRichText extends StatelessWidget {
                     commandsList: commandsList,
                     style: style,
                     acceptNext: acceptNext,
+                    onTap: onTap,
                   );
                   acceptNext = item.$2;
                   index++;
@@ -170,6 +173,7 @@ class SimpleRichText extends StatelessWidget {
                   set: set,
                   commandsList: commandsList,
                   style: style,
+                  onTap: onTap,
                 );
                 index += adv;
                 final TextSpan? toggled;
@@ -184,6 +188,7 @@ class SimpleRichText extends StatelessWidget {
                     commandsList: commandsList,
                     style: style,
                     acceptNext: acceptNext,
+                    onTap: onTap,
                   );
                   toggled = toggledMarker.$1;
                   acceptNext = toggledMarker.$2;
