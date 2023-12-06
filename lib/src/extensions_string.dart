@@ -5,8 +5,8 @@ import 'colors.dart';
 import 'commands_handler.dart';
 import 'error.dart';
 import 'extensions_map.dart';
-import 'global_span.dart';
 import 'logger.dart';
+import 'models/global_span.dart';
 
 extension Splitable on String {
   List<String> splitWithChars(String chars) => split(RegExp(chars));

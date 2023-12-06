@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
-import 'commands.dart';
 import 'logger.dart';
+import 'models/commands.dart';
 
 class CommandHandler {
   CommandHandler._();
