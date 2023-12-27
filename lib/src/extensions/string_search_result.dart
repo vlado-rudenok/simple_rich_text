@@ -7,10 +7,10 @@ extension SearchResults on String {
     final lines = split(_char).map((e) => e.startsWith('{backgroundColor') ? '$_char$e$_char' : e);
 
     return term.when(
-      global: (terms) => lines.map((e) => e.highlightAllMatchedWordFor(terms, exactMatch: true)).join(),
-      localAllMatch: (terms) => lines.map((e) => e.highlightAllMatchedWordFor(terms, exactMatch: true)).join(),
-      localAnyMatch: (terms) => lines.map((e) => e.highlightAllMatchedWordFor(terms, exactMatch: false)).join(),
-      localExactMatch: (terms) => lines.map((e) => e.highlightExactMathFor(terms)).join(),
+      wholeWordsMatches: (terms) => lines.map((e) => e.highlightAllMatchedWordFor(terms, exactMatch: true)).join(),
+      partialWordsMatches: (terms) => lines.map((e) => e.highlightAllMatchedWordFor(terms, exactMatch: false)).join(),
+      exactMatch: (terms) => lines.map((e) => e.highlightExactMathFor(terms)).join(),
+      navigateOnly: () => '^{navAnchor:nav_anchor}^$this',
       none: () => this,
     );
   }

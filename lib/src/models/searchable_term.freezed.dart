@@ -18,56 +18,56 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$SearchableTerm {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(List<String> terms) global,
-    required TResult Function(List<String> terms) localAllMatch,
-    required TResult Function(List<String> terms) localAnyMatch,
-    required TResult Function(String term) localExactMatch,
+    required TResult Function(List<String> terms) wholeWordsMatches,
+    required TResult Function(List<String> terms) partialWordsMatches,
+    required TResult Function(String term) exactMatch,
+    required TResult Function() navigateOnly,
     required TResult Function() none,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(List<String> terms)? global,
-    TResult? Function(List<String> terms)? localAllMatch,
-    TResult? Function(List<String> terms)? localAnyMatch,
-    TResult? Function(String term)? localExactMatch,
+    TResult? Function(List<String> terms)? wholeWordsMatches,
+    TResult? Function(List<String> terms)? partialWordsMatches,
+    TResult? Function(String term)? exactMatch,
+    TResult? Function()? navigateOnly,
     TResult? Function()? none,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(List<String> terms)? global,
-    TResult Function(List<String> terms)? localAllMatch,
-    TResult Function(List<String> terms)? localAnyMatch,
-    TResult Function(String term)? localExactMatch,
+    TResult Function(List<String> terms)? wholeWordsMatches,
+    TResult Function(List<String> terms)? partialWordsMatches,
+    TResult Function(String term)? exactMatch,
+    TResult Function()? navigateOnly,
     TResult Function()? none,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_Global value) global,
-    required TResult Function(_LocalAllMatch value) localAllMatch,
-    required TResult Function(_LocalAnyMatch value) localAnyMatch,
-    required TResult Function(_LocalExactMatch value) localExactMatch,
+    required TResult Function(_WholeWordsMatches value) wholeWordsMatches,
+    required TResult Function(_PartialWordsMatches value) partialWordsMatches,
+    required TResult Function(_ExactMatch value) exactMatch,
+    required TResult Function(_NavigateOnly value) navigateOnly,
     required TResult Function(_None value) none,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_Global value)? global,
-    TResult? Function(_LocalAllMatch value)? localAllMatch,
-    TResult? Function(_LocalAnyMatch value)? localAnyMatch,
-    TResult? Function(_LocalExactMatch value)? localExactMatch,
+    TResult? Function(_WholeWordsMatches value)? wholeWordsMatches,
+    TResult? Function(_PartialWordsMatches value)? partialWordsMatches,
+    TResult? Function(_ExactMatch value)? exactMatch,
+    TResult? Function(_NavigateOnly value)? navigateOnly,
     TResult? Function(_None value)? none,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_Global value)? global,
-    TResult Function(_LocalAllMatch value)? localAllMatch,
-    TResult Function(_LocalAnyMatch value)? localAnyMatch,
-    TResult Function(_LocalExactMatch value)? localExactMatch,
+    TResult Function(_WholeWordsMatches value)? wholeWordsMatches,
+    TResult Function(_PartialWordsMatches value)? partialWordsMatches,
+    TResult Function(_ExactMatch value)? exactMatch,
+    TResult Function(_NavigateOnly value)? navigateOnly,
     TResult Function(_None value)? none,
     required TResult orElse(),
   }) =>
@@ -93,20 +93,20 @@ class _$SearchableTermCopyWithImpl<$Res, $Val extends SearchableTerm>
 }
 
 /// @nodoc
-abstract class _$$GlobalImplCopyWith<$Res> {
-  factory _$$GlobalImplCopyWith(
-          _$GlobalImpl value, $Res Function(_$GlobalImpl) then) =
-      __$$GlobalImplCopyWithImpl<$Res>;
+abstract class _$$WholeWordsMatchesImplCopyWith<$Res> {
+  factory _$$WholeWordsMatchesImplCopyWith(_$WholeWordsMatchesImpl value,
+          $Res Function(_$WholeWordsMatchesImpl) then) =
+      __$$WholeWordsMatchesImplCopyWithImpl<$Res>;
   @useResult
   $Res call({List<String> terms});
 }
 
 /// @nodoc
-class __$$GlobalImplCopyWithImpl<$Res>
-    extends _$SearchableTermCopyWithImpl<$Res, _$GlobalImpl>
-    implements _$$GlobalImplCopyWith<$Res> {
-  __$$GlobalImplCopyWithImpl(
-      _$GlobalImpl _value, $Res Function(_$GlobalImpl) _then)
+class __$$WholeWordsMatchesImplCopyWithImpl<$Res>
+    extends _$SearchableTermCopyWithImpl<$Res, _$WholeWordsMatchesImpl>
+    implements _$$WholeWordsMatchesImplCopyWith<$Res> {
+  __$$WholeWordsMatchesImplCopyWithImpl(_$WholeWordsMatchesImpl _value,
+      $Res Function(_$WholeWordsMatchesImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -114,7 +114,7 @@ class __$$GlobalImplCopyWithImpl<$Res>
   $Res call({
     Object? terms = null,
   }) {
-    return _then(_$GlobalImpl(
+    return _then(_$WholeWordsMatchesImpl(
       null == terms
           ? _value._terms
           : terms // ignore: cast_nullable_to_non_nullable
@@ -125,8 +125,8 @@ class __$$GlobalImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$GlobalImpl implements _Global {
-  const _$GlobalImpl(final List<String> terms) : _terms = terms;
+class _$WholeWordsMatchesImpl implements _WholeWordsMatches {
+  const _$WholeWordsMatchesImpl(final List<String> terms) : _terms = terms;
 
   final List<String> _terms;
   @override
@@ -138,14 +138,14 @@ class _$GlobalImpl implements _Global {
 
   @override
   String toString() {
-    return 'SearchableTerm.global(terms: $terms)';
+    return 'SearchableTerm.wholeWordsMatches(terms: $terms)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$GlobalImpl &&
+            other is _$WholeWordsMatchesImpl &&
             const DeepCollectionEquality().equals(other._terms, _terms));
   }
 
@@ -156,45 +156,46 @@ class _$GlobalImpl implements _Global {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$GlobalImplCopyWith<_$GlobalImpl> get copyWith =>
-      __$$GlobalImplCopyWithImpl<_$GlobalImpl>(this, _$identity);
+  _$$WholeWordsMatchesImplCopyWith<_$WholeWordsMatchesImpl> get copyWith =>
+      __$$WholeWordsMatchesImplCopyWithImpl<_$WholeWordsMatchesImpl>(
+          this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(List<String> terms) global,
-    required TResult Function(List<String> terms) localAllMatch,
-    required TResult Function(List<String> terms) localAnyMatch,
-    required TResult Function(String term) localExactMatch,
+    required TResult Function(List<String> terms) wholeWordsMatches,
+    required TResult Function(List<String> terms) partialWordsMatches,
+    required TResult Function(String term) exactMatch,
+    required TResult Function() navigateOnly,
     required TResult Function() none,
   }) {
-    return global(terms);
+    return wholeWordsMatches(terms);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(List<String> terms)? global,
-    TResult? Function(List<String> terms)? localAllMatch,
-    TResult? Function(List<String> terms)? localAnyMatch,
-    TResult? Function(String term)? localExactMatch,
+    TResult? Function(List<String> terms)? wholeWordsMatches,
+    TResult? Function(List<String> terms)? partialWordsMatches,
+    TResult? Function(String term)? exactMatch,
+    TResult? Function()? navigateOnly,
     TResult? Function()? none,
   }) {
-    return global?.call(terms);
+    return wholeWordsMatches?.call(terms);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(List<String> terms)? global,
-    TResult Function(List<String> terms)? localAllMatch,
-    TResult Function(List<String> terms)? localAnyMatch,
-    TResult Function(String term)? localExactMatch,
+    TResult Function(List<String> terms)? wholeWordsMatches,
+    TResult Function(List<String> terms)? partialWordsMatches,
+    TResult Function(String term)? exactMatch,
+    TResult Function()? navigateOnly,
     TResult Function()? none,
     required TResult orElse(),
   }) {
-    if (global != null) {
-      return global(terms);
+    if (wholeWordsMatches != null) {
+      return wholeWordsMatches(terms);
     }
     return orElse();
   }
@@ -202,68 +203,69 @@ class _$GlobalImpl implements _Global {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_Global value) global,
-    required TResult Function(_LocalAllMatch value) localAllMatch,
-    required TResult Function(_LocalAnyMatch value) localAnyMatch,
-    required TResult Function(_LocalExactMatch value) localExactMatch,
+    required TResult Function(_WholeWordsMatches value) wholeWordsMatches,
+    required TResult Function(_PartialWordsMatches value) partialWordsMatches,
+    required TResult Function(_ExactMatch value) exactMatch,
+    required TResult Function(_NavigateOnly value) navigateOnly,
     required TResult Function(_None value) none,
   }) {
-    return global(this);
+    return wholeWordsMatches(this);
   }
 
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_Global value)? global,
-    TResult? Function(_LocalAllMatch value)? localAllMatch,
-    TResult? Function(_LocalAnyMatch value)? localAnyMatch,
-    TResult? Function(_LocalExactMatch value)? localExactMatch,
+    TResult? Function(_WholeWordsMatches value)? wholeWordsMatches,
+    TResult? Function(_PartialWordsMatches value)? partialWordsMatches,
+    TResult? Function(_ExactMatch value)? exactMatch,
+    TResult? Function(_NavigateOnly value)? navigateOnly,
     TResult? Function(_None value)? none,
   }) {
-    return global?.call(this);
+    return wholeWordsMatches?.call(this);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_Global value)? global,
-    TResult Function(_LocalAllMatch value)? localAllMatch,
-    TResult Function(_LocalAnyMatch value)? localAnyMatch,
-    TResult Function(_LocalExactMatch value)? localExactMatch,
+    TResult Function(_WholeWordsMatches value)? wholeWordsMatches,
+    TResult Function(_PartialWordsMatches value)? partialWordsMatches,
+    TResult Function(_ExactMatch value)? exactMatch,
+    TResult Function(_NavigateOnly value)? navigateOnly,
     TResult Function(_None value)? none,
     required TResult orElse(),
   }) {
-    if (global != null) {
-      return global(this);
+    if (wholeWordsMatches != null) {
+      return wholeWordsMatches(this);
     }
     return orElse();
   }
 }
 
-abstract class _Global implements SearchableTerm {
-  const factory _Global(final List<String> terms) = _$GlobalImpl;
+abstract class _WholeWordsMatches implements SearchableTerm {
+  const factory _WholeWordsMatches(final List<String> terms) =
+      _$WholeWordsMatchesImpl;
 
   List<String> get terms;
   @JsonKey(ignore: true)
-  _$$GlobalImplCopyWith<_$GlobalImpl> get copyWith =>
+  _$$WholeWordsMatchesImplCopyWith<_$WholeWordsMatchesImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$LocalAllMatchImplCopyWith<$Res> {
-  factory _$$LocalAllMatchImplCopyWith(
-          _$LocalAllMatchImpl value, $Res Function(_$LocalAllMatchImpl) then) =
-      __$$LocalAllMatchImplCopyWithImpl<$Res>;
+abstract class _$$PartialWordsMatchesImplCopyWith<$Res> {
+  factory _$$PartialWordsMatchesImplCopyWith(_$PartialWordsMatchesImpl value,
+          $Res Function(_$PartialWordsMatchesImpl) then) =
+      __$$PartialWordsMatchesImplCopyWithImpl<$Res>;
   @useResult
   $Res call({List<String> terms});
 }
 
 /// @nodoc
-class __$$LocalAllMatchImplCopyWithImpl<$Res>
-    extends _$SearchableTermCopyWithImpl<$Res, _$LocalAllMatchImpl>
-    implements _$$LocalAllMatchImplCopyWith<$Res> {
-  __$$LocalAllMatchImplCopyWithImpl(
-      _$LocalAllMatchImpl _value, $Res Function(_$LocalAllMatchImpl) _then)
+class __$$PartialWordsMatchesImplCopyWithImpl<$Res>
+    extends _$SearchableTermCopyWithImpl<$Res, _$PartialWordsMatchesImpl>
+    implements _$$PartialWordsMatchesImplCopyWith<$Res> {
+  __$$PartialWordsMatchesImplCopyWithImpl(_$PartialWordsMatchesImpl _value,
+      $Res Function(_$PartialWordsMatchesImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -271,7 +273,7 @@ class __$$LocalAllMatchImplCopyWithImpl<$Res>
   $Res call({
     Object? terms = null,
   }) {
-    return _then(_$LocalAllMatchImpl(
+    return _then(_$PartialWordsMatchesImpl(
       null == terms
           ? _value._terms
           : terms // ignore: cast_nullable_to_non_nullable
@@ -282,8 +284,8 @@ class __$$LocalAllMatchImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$LocalAllMatchImpl implements _LocalAllMatch {
-  const _$LocalAllMatchImpl(final List<String> terms) : _terms = terms;
+class _$PartialWordsMatchesImpl implements _PartialWordsMatches {
+  const _$PartialWordsMatchesImpl(final List<String> terms) : _terms = terms;
 
   final List<String> _terms;
   @override
@@ -295,14 +297,14 @@ class _$LocalAllMatchImpl implements _LocalAllMatch {
 
   @override
   String toString() {
-    return 'SearchableTerm.localAllMatch(terms: $terms)';
+    return 'SearchableTerm.partialWordsMatches(terms: $terms)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$LocalAllMatchImpl &&
+            other is _$PartialWordsMatchesImpl &&
             const DeepCollectionEquality().equals(other._terms, _terms));
   }
 
@@ -313,45 +315,46 @@ class _$LocalAllMatchImpl implements _LocalAllMatch {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$LocalAllMatchImplCopyWith<_$LocalAllMatchImpl> get copyWith =>
-      __$$LocalAllMatchImplCopyWithImpl<_$LocalAllMatchImpl>(this, _$identity);
+  _$$PartialWordsMatchesImplCopyWith<_$PartialWordsMatchesImpl> get copyWith =>
+      __$$PartialWordsMatchesImplCopyWithImpl<_$PartialWordsMatchesImpl>(
+          this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(List<String> terms) global,
-    required TResult Function(List<String> terms) localAllMatch,
-    required TResult Function(List<String> terms) localAnyMatch,
-    required TResult Function(String term) localExactMatch,
+    required TResult Function(List<String> terms) wholeWordsMatches,
+    required TResult Function(List<String> terms) partialWordsMatches,
+    required TResult Function(String term) exactMatch,
+    required TResult Function() navigateOnly,
     required TResult Function() none,
   }) {
-    return localAllMatch(terms);
+    return partialWordsMatches(terms);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(List<String> terms)? global,
-    TResult? Function(List<String> terms)? localAllMatch,
-    TResult? Function(List<String> terms)? localAnyMatch,
-    TResult? Function(String term)? localExactMatch,
+    TResult? Function(List<String> terms)? wholeWordsMatches,
+    TResult? Function(List<String> terms)? partialWordsMatches,
+    TResult? Function(String term)? exactMatch,
+    TResult? Function()? navigateOnly,
     TResult? Function()? none,
   }) {
-    return localAllMatch?.call(terms);
+    return partialWordsMatches?.call(terms);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(List<String> terms)? global,
-    TResult Function(List<String> terms)? localAllMatch,
-    TResult Function(List<String> terms)? localAnyMatch,
-    TResult Function(String term)? localExactMatch,
+    TResult Function(List<String> terms)? wholeWordsMatches,
+    TResult Function(List<String> terms)? partialWordsMatches,
+    TResult Function(String term)? exactMatch,
+    TResult Function()? navigateOnly,
     TResult Function()? none,
     required TResult orElse(),
   }) {
-    if (localAllMatch != null) {
-      return localAllMatch(terms);
+    if (partialWordsMatches != null) {
+      return partialWordsMatches(terms);
     }
     return orElse();
   }
@@ -359,225 +362,69 @@ class _$LocalAllMatchImpl implements _LocalAllMatch {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_Global value) global,
-    required TResult Function(_LocalAllMatch value) localAllMatch,
-    required TResult Function(_LocalAnyMatch value) localAnyMatch,
-    required TResult Function(_LocalExactMatch value) localExactMatch,
+    required TResult Function(_WholeWordsMatches value) wholeWordsMatches,
+    required TResult Function(_PartialWordsMatches value) partialWordsMatches,
+    required TResult Function(_ExactMatch value) exactMatch,
+    required TResult Function(_NavigateOnly value) navigateOnly,
     required TResult Function(_None value) none,
   }) {
-    return localAllMatch(this);
+    return partialWordsMatches(this);
   }
 
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_Global value)? global,
-    TResult? Function(_LocalAllMatch value)? localAllMatch,
-    TResult? Function(_LocalAnyMatch value)? localAnyMatch,
-    TResult? Function(_LocalExactMatch value)? localExactMatch,
+    TResult? Function(_WholeWordsMatches value)? wholeWordsMatches,
+    TResult? Function(_PartialWordsMatches value)? partialWordsMatches,
+    TResult? Function(_ExactMatch value)? exactMatch,
+    TResult? Function(_NavigateOnly value)? navigateOnly,
     TResult? Function(_None value)? none,
   }) {
-    return localAllMatch?.call(this);
+    return partialWordsMatches?.call(this);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_Global value)? global,
-    TResult Function(_LocalAllMatch value)? localAllMatch,
-    TResult Function(_LocalAnyMatch value)? localAnyMatch,
-    TResult Function(_LocalExactMatch value)? localExactMatch,
+    TResult Function(_WholeWordsMatches value)? wholeWordsMatches,
+    TResult Function(_PartialWordsMatches value)? partialWordsMatches,
+    TResult Function(_ExactMatch value)? exactMatch,
+    TResult Function(_NavigateOnly value)? navigateOnly,
     TResult Function(_None value)? none,
     required TResult orElse(),
   }) {
-    if (localAllMatch != null) {
-      return localAllMatch(this);
+    if (partialWordsMatches != null) {
+      return partialWordsMatches(this);
     }
     return orElse();
   }
 }
 
-abstract class _LocalAllMatch implements SearchableTerm {
-  const factory _LocalAllMatch(final List<String> terms) = _$LocalAllMatchImpl;
+abstract class _PartialWordsMatches implements SearchableTerm {
+  const factory _PartialWordsMatches(final List<String> terms) =
+      _$PartialWordsMatchesImpl;
 
   List<String> get terms;
   @JsonKey(ignore: true)
-  _$$LocalAllMatchImplCopyWith<_$LocalAllMatchImpl> get copyWith =>
+  _$$PartialWordsMatchesImplCopyWith<_$PartialWordsMatchesImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$LocalAnyMatchImplCopyWith<$Res> {
-  factory _$$LocalAnyMatchImplCopyWith(
-          _$LocalAnyMatchImpl value, $Res Function(_$LocalAnyMatchImpl) then) =
-      __$$LocalAnyMatchImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({List<String> terms});
-}
-
-/// @nodoc
-class __$$LocalAnyMatchImplCopyWithImpl<$Res>
-    extends _$SearchableTermCopyWithImpl<$Res, _$LocalAnyMatchImpl>
-    implements _$$LocalAnyMatchImplCopyWith<$Res> {
-  __$$LocalAnyMatchImplCopyWithImpl(
-      _$LocalAnyMatchImpl _value, $Res Function(_$LocalAnyMatchImpl) _then)
-      : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? terms = null,
-  }) {
-    return _then(_$LocalAnyMatchImpl(
-      null == terms
-          ? _value._terms
-          : terms // ignore: cast_nullable_to_non_nullable
-              as List<String>,
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$LocalAnyMatchImpl implements _LocalAnyMatch {
-  const _$LocalAnyMatchImpl(final List<String> terms) : _terms = terms;
-
-  final List<String> _terms;
-  @override
-  List<String> get terms {
-    if (_terms is EqualUnmodifiableListView) return _terms;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_terms);
-  }
-
-  @override
-  String toString() {
-    return 'SearchableTerm.localAnyMatch(terms: $terms)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$LocalAnyMatchImpl &&
-            const DeepCollectionEquality().equals(other._terms, _terms));
-  }
-
-  @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(_terms));
-
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$LocalAnyMatchImplCopyWith<_$LocalAnyMatchImpl> get copyWith =>
-      __$$LocalAnyMatchImplCopyWithImpl<_$LocalAnyMatchImpl>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(List<String> terms) global,
-    required TResult Function(List<String> terms) localAllMatch,
-    required TResult Function(List<String> terms) localAnyMatch,
-    required TResult Function(String term) localExactMatch,
-    required TResult Function() none,
-  }) {
-    return localAnyMatch(terms);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(List<String> terms)? global,
-    TResult? Function(List<String> terms)? localAllMatch,
-    TResult? Function(List<String> terms)? localAnyMatch,
-    TResult? Function(String term)? localExactMatch,
-    TResult? Function()? none,
-  }) {
-    return localAnyMatch?.call(terms);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(List<String> terms)? global,
-    TResult Function(List<String> terms)? localAllMatch,
-    TResult Function(List<String> terms)? localAnyMatch,
-    TResult Function(String term)? localExactMatch,
-    TResult Function()? none,
-    required TResult orElse(),
-  }) {
-    if (localAnyMatch != null) {
-      return localAnyMatch(terms);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_Global value) global,
-    required TResult Function(_LocalAllMatch value) localAllMatch,
-    required TResult Function(_LocalAnyMatch value) localAnyMatch,
-    required TResult Function(_LocalExactMatch value) localExactMatch,
-    required TResult Function(_None value) none,
-  }) {
-    return localAnyMatch(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_Global value)? global,
-    TResult? Function(_LocalAllMatch value)? localAllMatch,
-    TResult? Function(_LocalAnyMatch value)? localAnyMatch,
-    TResult? Function(_LocalExactMatch value)? localExactMatch,
-    TResult? Function(_None value)? none,
-  }) {
-    return localAnyMatch?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_Global value)? global,
-    TResult Function(_LocalAllMatch value)? localAllMatch,
-    TResult Function(_LocalAnyMatch value)? localAnyMatch,
-    TResult Function(_LocalExactMatch value)? localExactMatch,
-    TResult Function(_None value)? none,
-    required TResult orElse(),
-  }) {
-    if (localAnyMatch != null) {
-      return localAnyMatch(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class _LocalAnyMatch implements SearchableTerm {
-  const factory _LocalAnyMatch(final List<String> terms) = _$LocalAnyMatchImpl;
-
-  List<String> get terms;
-  @JsonKey(ignore: true)
-  _$$LocalAnyMatchImplCopyWith<_$LocalAnyMatchImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$LocalExactMatchImplCopyWith<$Res> {
-  factory _$$LocalExactMatchImplCopyWith(_$LocalExactMatchImpl value,
-          $Res Function(_$LocalExactMatchImpl) then) =
-      __$$LocalExactMatchImplCopyWithImpl<$Res>;
+abstract class _$$ExactMatchImplCopyWith<$Res> {
+  factory _$$ExactMatchImplCopyWith(
+          _$ExactMatchImpl value, $Res Function(_$ExactMatchImpl) then) =
+      __$$ExactMatchImplCopyWithImpl<$Res>;
   @useResult
   $Res call({String term});
 }
 
 /// @nodoc
-class __$$LocalExactMatchImplCopyWithImpl<$Res>
-    extends _$SearchableTermCopyWithImpl<$Res, _$LocalExactMatchImpl>
-    implements _$$LocalExactMatchImplCopyWith<$Res> {
-  __$$LocalExactMatchImplCopyWithImpl(
-      _$LocalExactMatchImpl _value, $Res Function(_$LocalExactMatchImpl) _then)
+class __$$ExactMatchImplCopyWithImpl<$Res>
+    extends _$SearchableTermCopyWithImpl<$Res, _$ExactMatchImpl>
+    implements _$$ExactMatchImplCopyWith<$Res> {
+  __$$ExactMatchImplCopyWithImpl(
+      _$ExactMatchImpl _value, $Res Function(_$ExactMatchImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -585,7 +432,7 @@ class __$$LocalExactMatchImplCopyWithImpl<$Res>
   $Res call({
     Object? term = null,
   }) {
-    return _then(_$LocalExactMatchImpl(
+    return _then(_$ExactMatchImpl(
       null == term
           ? _value.term
           : term // ignore: cast_nullable_to_non_nullable
@@ -596,22 +443,22 @@ class __$$LocalExactMatchImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$LocalExactMatchImpl implements _LocalExactMatch {
-  const _$LocalExactMatchImpl(this.term);
+class _$ExactMatchImpl implements _ExactMatch {
+  const _$ExactMatchImpl(this.term);
 
   @override
   final String term;
 
   @override
   String toString() {
-    return 'SearchableTerm.localExactMatch(term: $term)';
+    return 'SearchableTerm.exactMatch(term: $term)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$LocalExactMatchImpl &&
+            other is _$ExactMatchImpl &&
             (identical(other.term, term) || other.term == term));
   }
 
@@ -621,46 +468,45 @@ class _$LocalExactMatchImpl implements _LocalExactMatch {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$LocalExactMatchImplCopyWith<_$LocalExactMatchImpl> get copyWith =>
-      __$$LocalExactMatchImplCopyWithImpl<_$LocalExactMatchImpl>(
-          this, _$identity);
+  _$$ExactMatchImplCopyWith<_$ExactMatchImpl> get copyWith =>
+      __$$ExactMatchImplCopyWithImpl<_$ExactMatchImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(List<String> terms) global,
-    required TResult Function(List<String> terms) localAllMatch,
-    required TResult Function(List<String> terms) localAnyMatch,
-    required TResult Function(String term) localExactMatch,
+    required TResult Function(List<String> terms) wholeWordsMatches,
+    required TResult Function(List<String> terms) partialWordsMatches,
+    required TResult Function(String term) exactMatch,
+    required TResult Function() navigateOnly,
     required TResult Function() none,
   }) {
-    return localExactMatch(term);
+    return exactMatch(term);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(List<String> terms)? global,
-    TResult? Function(List<String> terms)? localAllMatch,
-    TResult? Function(List<String> terms)? localAnyMatch,
-    TResult? Function(String term)? localExactMatch,
+    TResult? Function(List<String> terms)? wholeWordsMatches,
+    TResult? Function(List<String> terms)? partialWordsMatches,
+    TResult? Function(String term)? exactMatch,
+    TResult? Function()? navigateOnly,
     TResult? Function()? none,
   }) {
-    return localExactMatch?.call(term);
+    return exactMatch?.call(term);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(List<String> terms)? global,
-    TResult Function(List<String> terms)? localAllMatch,
-    TResult Function(List<String> terms)? localAnyMatch,
-    TResult Function(String term)? localExactMatch,
+    TResult Function(List<String> terms)? wholeWordsMatches,
+    TResult Function(List<String> terms)? partialWordsMatches,
+    TResult Function(String term)? exactMatch,
+    TResult Function()? navigateOnly,
     TResult Function()? none,
     required TResult orElse(),
   }) {
-    if (localExactMatch != null) {
-      return localExactMatch(term);
+    if (exactMatch != null) {
+      return exactMatch(term);
     }
     return orElse();
   }
@@ -668,51 +514,171 @@ class _$LocalExactMatchImpl implements _LocalExactMatch {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_Global value) global,
-    required TResult Function(_LocalAllMatch value) localAllMatch,
-    required TResult Function(_LocalAnyMatch value) localAnyMatch,
-    required TResult Function(_LocalExactMatch value) localExactMatch,
+    required TResult Function(_WholeWordsMatches value) wholeWordsMatches,
+    required TResult Function(_PartialWordsMatches value) partialWordsMatches,
+    required TResult Function(_ExactMatch value) exactMatch,
+    required TResult Function(_NavigateOnly value) navigateOnly,
     required TResult Function(_None value) none,
   }) {
-    return localExactMatch(this);
+    return exactMatch(this);
   }
 
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_Global value)? global,
-    TResult? Function(_LocalAllMatch value)? localAllMatch,
-    TResult? Function(_LocalAnyMatch value)? localAnyMatch,
-    TResult? Function(_LocalExactMatch value)? localExactMatch,
+    TResult? Function(_WholeWordsMatches value)? wholeWordsMatches,
+    TResult? Function(_PartialWordsMatches value)? partialWordsMatches,
+    TResult? Function(_ExactMatch value)? exactMatch,
+    TResult? Function(_NavigateOnly value)? navigateOnly,
     TResult? Function(_None value)? none,
   }) {
-    return localExactMatch?.call(this);
+    return exactMatch?.call(this);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_Global value)? global,
-    TResult Function(_LocalAllMatch value)? localAllMatch,
-    TResult Function(_LocalAnyMatch value)? localAnyMatch,
-    TResult Function(_LocalExactMatch value)? localExactMatch,
+    TResult Function(_WholeWordsMatches value)? wholeWordsMatches,
+    TResult Function(_PartialWordsMatches value)? partialWordsMatches,
+    TResult Function(_ExactMatch value)? exactMatch,
+    TResult Function(_NavigateOnly value)? navigateOnly,
     TResult Function(_None value)? none,
     required TResult orElse(),
   }) {
-    if (localExactMatch != null) {
-      return localExactMatch(this);
+    if (exactMatch != null) {
+      return exactMatch(this);
     }
     return orElse();
   }
 }
 
-abstract class _LocalExactMatch implements SearchableTerm {
-  const factory _LocalExactMatch(final String term) = _$LocalExactMatchImpl;
+abstract class _ExactMatch implements SearchableTerm {
+  const factory _ExactMatch(final String term) = _$ExactMatchImpl;
 
   String get term;
   @JsonKey(ignore: true)
-  _$$LocalExactMatchImplCopyWith<_$LocalExactMatchImpl> get copyWith =>
+  _$$ExactMatchImplCopyWith<_$ExactMatchImpl> get copyWith =>
       throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$NavigateOnlyImplCopyWith<$Res> {
+  factory _$$NavigateOnlyImplCopyWith(
+          _$NavigateOnlyImpl value, $Res Function(_$NavigateOnlyImpl) then) =
+      __$$NavigateOnlyImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$NavigateOnlyImplCopyWithImpl<$Res>
+    extends _$SearchableTermCopyWithImpl<$Res, _$NavigateOnlyImpl>
+    implements _$$NavigateOnlyImplCopyWith<$Res> {
+  __$$NavigateOnlyImplCopyWithImpl(
+      _$NavigateOnlyImpl _value, $Res Function(_$NavigateOnlyImpl) _then)
+      : super(_value, _then);
+}
+
+/// @nodoc
+
+class _$NavigateOnlyImpl implements _NavigateOnly {
+  const _$NavigateOnlyImpl();
+
+  @override
+  String toString() {
+    return 'SearchableTerm.navigateOnly()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _$NavigateOnlyImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(List<String> terms) wholeWordsMatches,
+    required TResult Function(List<String> terms) partialWordsMatches,
+    required TResult Function(String term) exactMatch,
+    required TResult Function() navigateOnly,
+    required TResult Function() none,
+  }) {
+    return navigateOnly();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(List<String> terms)? wholeWordsMatches,
+    TResult? Function(List<String> terms)? partialWordsMatches,
+    TResult? Function(String term)? exactMatch,
+    TResult? Function()? navigateOnly,
+    TResult? Function()? none,
+  }) {
+    return navigateOnly?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(List<String> terms)? wholeWordsMatches,
+    TResult Function(List<String> terms)? partialWordsMatches,
+    TResult Function(String term)? exactMatch,
+    TResult Function()? navigateOnly,
+    TResult Function()? none,
+    required TResult orElse(),
+  }) {
+    if (navigateOnly != null) {
+      return navigateOnly();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_WholeWordsMatches value) wholeWordsMatches,
+    required TResult Function(_PartialWordsMatches value) partialWordsMatches,
+    required TResult Function(_ExactMatch value) exactMatch,
+    required TResult Function(_NavigateOnly value) navigateOnly,
+    required TResult Function(_None value) none,
+  }) {
+    return navigateOnly(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_WholeWordsMatches value)? wholeWordsMatches,
+    TResult? Function(_PartialWordsMatches value)? partialWordsMatches,
+    TResult? Function(_ExactMatch value)? exactMatch,
+    TResult? Function(_NavigateOnly value)? navigateOnly,
+    TResult? Function(_None value)? none,
+  }) {
+    return navigateOnly?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_WholeWordsMatches value)? wholeWordsMatches,
+    TResult Function(_PartialWordsMatches value)? partialWordsMatches,
+    TResult Function(_ExactMatch value)? exactMatch,
+    TResult Function(_NavigateOnly value)? navigateOnly,
+    TResult Function(_None value)? none,
+    required TResult orElse(),
+  }) {
+    if (navigateOnly != null) {
+      return navigateOnly(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _NavigateOnly implements SearchableTerm {
+  const factory _NavigateOnly() = _$NavigateOnlyImpl;
 }
 
 /// @nodoc
@@ -752,10 +718,10 @@ class _$NoneImpl implements _None {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(List<String> terms) global,
-    required TResult Function(List<String> terms) localAllMatch,
-    required TResult Function(List<String> terms) localAnyMatch,
-    required TResult Function(String term) localExactMatch,
+    required TResult Function(List<String> terms) wholeWordsMatches,
+    required TResult Function(List<String> terms) partialWordsMatches,
+    required TResult Function(String term) exactMatch,
+    required TResult Function() navigateOnly,
     required TResult Function() none,
   }) {
     return none();
@@ -764,10 +730,10 @@ class _$NoneImpl implements _None {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(List<String> terms)? global,
-    TResult? Function(List<String> terms)? localAllMatch,
-    TResult? Function(List<String> terms)? localAnyMatch,
-    TResult? Function(String term)? localExactMatch,
+    TResult? Function(List<String> terms)? wholeWordsMatches,
+    TResult? Function(List<String> terms)? partialWordsMatches,
+    TResult? Function(String term)? exactMatch,
+    TResult? Function()? navigateOnly,
     TResult? Function()? none,
   }) {
     return none?.call();
@@ -776,10 +742,10 @@ class _$NoneImpl implements _None {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(List<String> terms)? global,
-    TResult Function(List<String> terms)? localAllMatch,
-    TResult Function(List<String> terms)? localAnyMatch,
-    TResult Function(String term)? localExactMatch,
+    TResult Function(List<String> terms)? wholeWordsMatches,
+    TResult Function(List<String> terms)? partialWordsMatches,
+    TResult Function(String term)? exactMatch,
+    TResult Function()? navigateOnly,
     TResult Function()? none,
     required TResult orElse(),
   }) {
@@ -792,10 +758,10 @@ class _$NoneImpl implements _None {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_Global value) global,
-    required TResult Function(_LocalAllMatch value) localAllMatch,
-    required TResult Function(_LocalAnyMatch value) localAnyMatch,
-    required TResult Function(_LocalExactMatch value) localExactMatch,
+    required TResult Function(_WholeWordsMatches value) wholeWordsMatches,
+    required TResult Function(_PartialWordsMatches value) partialWordsMatches,
+    required TResult Function(_ExactMatch value) exactMatch,
+    required TResult Function(_NavigateOnly value) navigateOnly,
     required TResult Function(_None value) none,
   }) {
     return none(this);
@@ -804,10 +770,10 @@ class _$NoneImpl implements _None {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_Global value)? global,
-    TResult? Function(_LocalAllMatch value)? localAllMatch,
-    TResult? Function(_LocalAnyMatch value)? localAnyMatch,
-    TResult? Function(_LocalExactMatch value)? localExactMatch,
+    TResult? Function(_WholeWordsMatches value)? wholeWordsMatches,
+    TResult? Function(_PartialWordsMatches value)? partialWordsMatches,
+    TResult? Function(_ExactMatch value)? exactMatch,
+    TResult? Function(_NavigateOnly value)? navigateOnly,
     TResult? Function(_None value)? none,
   }) {
     return none?.call(this);
@@ -816,10 +782,10 @@ class _$NoneImpl implements _None {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_Global value)? global,
-    TResult Function(_LocalAllMatch value)? localAllMatch,
-    TResult Function(_LocalAnyMatch value)? localAnyMatch,
-    TResult Function(_LocalExactMatch value)? localExactMatch,
+    TResult Function(_WholeWordsMatches value)? wholeWordsMatches,
+    TResult Function(_PartialWordsMatches value)? partialWordsMatches,
+    TResult Function(_ExactMatch value)? exactMatch,
+    TResult Function(_NavigateOnly value)? navigateOnly,
     TResult Function(_None value)? none,
     required TResult orElse(),
   }) {

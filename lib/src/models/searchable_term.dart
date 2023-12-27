@@ -4,13 +4,13 @@ part 'searchable_term.freezed.dart';
 
 @freezed
 class SearchableTerm with _$SearchableTerm {
-  const factory SearchableTerm.global(List<String> terms) = _Global;
+  const factory SearchableTerm.wholeWordsMatches(List<String> terms) = _WholeWordsMatches;
 
-  const factory SearchableTerm.localAllMatch(List<String> terms) = _LocalAllMatch;
+  const factory SearchableTerm.partialWordsMatches(List<String> terms) = _PartialWordsMatches;
 
-  const factory SearchableTerm.localAnyMatch(List<String> terms) = _LocalAnyMatch;
+  const factory SearchableTerm.exactMatch(String term) = _ExactMatch;
 
-  const factory SearchableTerm.localExactMatch(String term) = _LocalExactMatch;
+  const factory SearchableTerm.navigateOnly() = _NavigateOnly;
 
   const factory SearchableTerm.none() = _None;
 }
