@@ -3,12 +3,12 @@ library simple_rich_text;
 import 'package:flutter/material.dart';
 
 import 'simple_rich_text.dart';
-import 'src/models/global_span.dart';
 import 'src/mixin/text_processing.dart';
+import 'src/models/global_span.dart';
 
+export 'src/models/searchable_term.dart';
 export 'src/models/simple_rich_text_config.dart';
 export 'src/models/simple_rich_text_markdown.dart';
-export 'src/models/search_term.dart';
 
 /// Widget that renders a string with sub-string highlighting.
 class SimpleRichText extends StatelessWidget with TextProcessing {
@@ -16,15 +16,15 @@ class SimpleRichText extends StatelessWidget with TextProcessing {
     required this.text,
     required this.config,
     required this.style,
+    this.searchTerm = const SearchableTerm.none(),
     super.key,
     this.onUpdate,
-    this.searchTerm,
     this.onTap,
   });
 
   /// The String to be displayed using rich text.
   final String text;
-  final Object? searchTerm;
+  final SearchableTerm searchTerm;
   final SimpleRichTextConfig config;
   final TextStyle style;
   final void Function(List<GlobalKey>)? onUpdate;

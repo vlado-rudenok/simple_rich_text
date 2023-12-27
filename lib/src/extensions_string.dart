@@ -163,23 +163,4 @@ extension Splitable on String {
     );
     return textStyle;
   }
-
-  String highlightAllMatchedWordFor({
-    required List<String> terms,
-  }) =>
-      replaceAllMapped(
-        RegExp(
-          terms.map(RegExp.escape).map((e) => e.contains(r'\') ? e : '\\b$e\\b').join('|'),
-          caseSensitive: false,
-        ),
-        (match) {
-          final matchedWord = match.group(0)!;
-          return '^{searchResult:search_result}$matchedWord^';
-        },
-      );
-
-  String highlightExactMathFor(String term) => replaceAllMapped(
-        RegExp(RegExp.escape(term), caseSensitive: false),
-        (match) => '^{searchResult:search_result}${match.group(0)}^',
-      );
 }

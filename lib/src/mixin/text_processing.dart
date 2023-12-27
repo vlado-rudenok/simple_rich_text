@@ -1,18 +1,17 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 
+import '../../simple_rich_text.dart';
 import '../error.dart';
+import '../extensions/string_search_result.dart';
 import '../extensions_string.dart';
 import '../logger.dart';
-import '../models/search_term.dart';
-import '../models/simple_rich_text_config.dart';
-import '../models/simple_rich_text_markdown.dart';
 
 mixin TextProcessing {
   Iterable<TextSpan> processText(
     String textToProcess,
     BuildContext context, {
-    required Object? searchTerm,
+    required SearchableTerm searchTerm,
     required SimpleRichTextConfig config,
     required TextStyle style,
     required void Function(String)? onTap,
@@ -21,20 +20,7 @@ mixin TextProcessing {
       return [const TextSpan()];
     }
 
-    String text;
-
-    if (searchTerm is LocalAllMatchTerm) {
-      final terms = searchTerm.term;
-      text = textToProcess.highlightAllMatchedWordFor(terms: terms);
-    } else if (searchTerm is LocalExactMatchTerm) {
-      final terms = searchTerm.term;
-      text = textToProcess.highlightExactMathFor(terms);
-    } else if (searchTerm is GlobalSearchTerm && textToProcess.contains(searchTerm.line)) {
-      final terms = searchTerm.term;
-      text = textToProcess.highlightAllMatchedWordFor(terms: terms);
-    } else {
-      text = textToProcess;
-    }
+    final text = textToProcess.highlightSearchResult(searchTerm);
 
     final set = <String>{};
 
