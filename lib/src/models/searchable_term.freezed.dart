@@ -20,6 +20,7 @@ mixin _$SearchableTerm {
   TResult when<TResult extends Object?>({
     required TResult Function(List<String> terms) global,
     required TResult Function(List<String> terms) localAllMatch,
+    required TResult Function(List<String> terms) localAnyMatch,
     required TResult Function(String term) localExactMatch,
     required TResult Function() none,
   }) =>
@@ -28,6 +29,7 @@ mixin _$SearchableTerm {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(List<String> terms)? global,
     TResult? Function(List<String> terms)? localAllMatch,
+    TResult? Function(List<String> terms)? localAnyMatch,
     TResult? Function(String term)? localExactMatch,
     TResult? Function()? none,
   }) =>
@@ -36,6 +38,7 @@ mixin _$SearchableTerm {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(List<String> terms)? global,
     TResult Function(List<String> terms)? localAllMatch,
+    TResult Function(List<String> terms)? localAnyMatch,
     TResult Function(String term)? localExactMatch,
     TResult Function()? none,
     required TResult orElse(),
@@ -45,6 +48,7 @@ mixin _$SearchableTerm {
   TResult map<TResult extends Object?>({
     required TResult Function(_Global value) global,
     required TResult Function(_LocalAllMatch value) localAllMatch,
+    required TResult Function(_LocalAnyMatch value) localAnyMatch,
     required TResult Function(_LocalExactMatch value) localExactMatch,
     required TResult Function(_None value) none,
   }) =>
@@ -53,6 +57,7 @@ mixin _$SearchableTerm {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Global value)? global,
     TResult? Function(_LocalAllMatch value)? localAllMatch,
+    TResult? Function(_LocalAnyMatch value)? localAnyMatch,
     TResult? Function(_LocalExactMatch value)? localExactMatch,
     TResult? Function(_None value)? none,
   }) =>
@@ -61,6 +66,7 @@ mixin _$SearchableTerm {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Global value)? global,
     TResult Function(_LocalAllMatch value)? localAllMatch,
+    TResult Function(_LocalAnyMatch value)? localAnyMatch,
     TResult Function(_LocalExactMatch value)? localExactMatch,
     TResult Function(_None value)? none,
     required TResult orElse(),
@@ -158,6 +164,7 @@ class _$GlobalImpl implements _Global {
   TResult when<TResult extends Object?>({
     required TResult Function(List<String> terms) global,
     required TResult Function(List<String> terms) localAllMatch,
+    required TResult Function(List<String> terms) localAnyMatch,
     required TResult Function(String term) localExactMatch,
     required TResult Function() none,
   }) {
@@ -169,6 +176,7 @@ class _$GlobalImpl implements _Global {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(List<String> terms)? global,
     TResult? Function(List<String> terms)? localAllMatch,
+    TResult? Function(List<String> terms)? localAnyMatch,
     TResult? Function(String term)? localExactMatch,
     TResult? Function()? none,
   }) {
@@ -180,6 +188,7 @@ class _$GlobalImpl implements _Global {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(List<String> terms)? global,
     TResult Function(List<String> terms)? localAllMatch,
+    TResult Function(List<String> terms)? localAnyMatch,
     TResult Function(String term)? localExactMatch,
     TResult Function()? none,
     required TResult orElse(),
@@ -195,6 +204,7 @@ class _$GlobalImpl implements _Global {
   TResult map<TResult extends Object?>({
     required TResult Function(_Global value) global,
     required TResult Function(_LocalAllMatch value) localAllMatch,
+    required TResult Function(_LocalAnyMatch value) localAnyMatch,
     required TResult Function(_LocalExactMatch value) localExactMatch,
     required TResult Function(_None value) none,
   }) {
@@ -206,6 +216,7 @@ class _$GlobalImpl implements _Global {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Global value)? global,
     TResult? Function(_LocalAllMatch value)? localAllMatch,
+    TResult? Function(_LocalAnyMatch value)? localAnyMatch,
     TResult? Function(_LocalExactMatch value)? localExactMatch,
     TResult? Function(_None value)? none,
   }) {
@@ -217,6 +228,7 @@ class _$GlobalImpl implements _Global {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Global value)? global,
     TResult Function(_LocalAllMatch value)? localAllMatch,
+    TResult Function(_LocalAnyMatch value)? localAnyMatch,
     TResult Function(_LocalExactMatch value)? localExactMatch,
     TResult Function(_None value)? none,
     required TResult orElse(),
@@ -309,6 +321,7 @@ class _$LocalAllMatchImpl implements _LocalAllMatch {
   TResult when<TResult extends Object?>({
     required TResult Function(List<String> terms) global,
     required TResult Function(List<String> terms) localAllMatch,
+    required TResult Function(List<String> terms) localAnyMatch,
     required TResult Function(String term) localExactMatch,
     required TResult Function() none,
   }) {
@@ -320,6 +333,7 @@ class _$LocalAllMatchImpl implements _LocalAllMatch {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(List<String> terms)? global,
     TResult? Function(List<String> terms)? localAllMatch,
+    TResult? Function(List<String> terms)? localAnyMatch,
     TResult? Function(String term)? localExactMatch,
     TResult? Function()? none,
   }) {
@@ -331,6 +345,7 @@ class _$LocalAllMatchImpl implements _LocalAllMatch {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(List<String> terms)? global,
     TResult Function(List<String> terms)? localAllMatch,
+    TResult Function(List<String> terms)? localAnyMatch,
     TResult Function(String term)? localExactMatch,
     TResult Function()? none,
     required TResult orElse(),
@@ -346,6 +361,7 @@ class _$LocalAllMatchImpl implements _LocalAllMatch {
   TResult map<TResult extends Object?>({
     required TResult Function(_Global value) global,
     required TResult Function(_LocalAllMatch value) localAllMatch,
+    required TResult Function(_LocalAnyMatch value) localAnyMatch,
     required TResult Function(_LocalExactMatch value) localExactMatch,
     required TResult Function(_None value) none,
   }) {
@@ -357,6 +373,7 @@ class _$LocalAllMatchImpl implements _LocalAllMatch {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Global value)? global,
     TResult? Function(_LocalAllMatch value)? localAllMatch,
+    TResult? Function(_LocalAnyMatch value)? localAnyMatch,
     TResult? Function(_LocalExactMatch value)? localExactMatch,
     TResult? Function(_None value)? none,
   }) {
@@ -368,6 +385,7 @@ class _$LocalAllMatchImpl implements _LocalAllMatch {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Global value)? global,
     TResult Function(_LocalAllMatch value)? localAllMatch,
+    TResult Function(_LocalAnyMatch value)? localAnyMatch,
     TResult Function(_LocalExactMatch value)? localExactMatch,
     TResult Function(_None value)? none,
     required TResult orElse(),
@@ -385,6 +403,163 @@ abstract class _LocalAllMatch implements SearchableTerm {
   List<String> get terms;
   @JsonKey(ignore: true)
   _$$LocalAllMatchImplCopyWith<_$LocalAllMatchImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$LocalAnyMatchImplCopyWith<$Res> {
+  factory _$$LocalAnyMatchImplCopyWith(
+          _$LocalAnyMatchImpl value, $Res Function(_$LocalAnyMatchImpl) then) =
+      __$$LocalAnyMatchImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({List<String> terms});
+}
+
+/// @nodoc
+class __$$LocalAnyMatchImplCopyWithImpl<$Res>
+    extends _$SearchableTermCopyWithImpl<$Res, _$LocalAnyMatchImpl>
+    implements _$$LocalAnyMatchImplCopyWith<$Res> {
+  __$$LocalAnyMatchImplCopyWithImpl(
+      _$LocalAnyMatchImpl _value, $Res Function(_$LocalAnyMatchImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? terms = null,
+  }) {
+    return _then(_$LocalAnyMatchImpl(
+      null == terms
+          ? _value._terms
+          : terms // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$LocalAnyMatchImpl implements _LocalAnyMatch {
+  const _$LocalAnyMatchImpl(final List<String> terms) : _terms = terms;
+
+  final List<String> _terms;
+  @override
+  List<String> get terms {
+    if (_terms is EqualUnmodifiableListView) return _terms;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_terms);
+  }
+
+  @override
+  String toString() {
+    return 'SearchableTerm.localAnyMatch(terms: $terms)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$LocalAnyMatchImpl &&
+            const DeepCollectionEquality().equals(other._terms, _terms));
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(_terms));
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$LocalAnyMatchImplCopyWith<_$LocalAnyMatchImpl> get copyWith =>
+      __$$LocalAnyMatchImplCopyWithImpl<_$LocalAnyMatchImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(List<String> terms) global,
+    required TResult Function(List<String> terms) localAllMatch,
+    required TResult Function(List<String> terms) localAnyMatch,
+    required TResult Function(String term) localExactMatch,
+    required TResult Function() none,
+  }) {
+    return localAnyMatch(terms);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(List<String> terms)? global,
+    TResult? Function(List<String> terms)? localAllMatch,
+    TResult? Function(List<String> terms)? localAnyMatch,
+    TResult? Function(String term)? localExactMatch,
+    TResult? Function()? none,
+  }) {
+    return localAnyMatch?.call(terms);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(List<String> terms)? global,
+    TResult Function(List<String> terms)? localAllMatch,
+    TResult Function(List<String> terms)? localAnyMatch,
+    TResult Function(String term)? localExactMatch,
+    TResult Function()? none,
+    required TResult orElse(),
+  }) {
+    if (localAnyMatch != null) {
+      return localAnyMatch(terms);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_Global value) global,
+    required TResult Function(_LocalAllMatch value) localAllMatch,
+    required TResult Function(_LocalAnyMatch value) localAnyMatch,
+    required TResult Function(_LocalExactMatch value) localExactMatch,
+    required TResult Function(_None value) none,
+  }) {
+    return localAnyMatch(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_Global value)? global,
+    TResult? Function(_LocalAllMatch value)? localAllMatch,
+    TResult? Function(_LocalAnyMatch value)? localAnyMatch,
+    TResult? Function(_LocalExactMatch value)? localExactMatch,
+    TResult? Function(_None value)? none,
+  }) {
+    return localAnyMatch?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_Global value)? global,
+    TResult Function(_LocalAllMatch value)? localAllMatch,
+    TResult Function(_LocalAnyMatch value)? localAnyMatch,
+    TResult Function(_LocalExactMatch value)? localExactMatch,
+    TResult Function(_None value)? none,
+    required TResult orElse(),
+  }) {
+    if (localAnyMatch != null) {
+      return localAnyMatch(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _LocalAnyMatch implements SearchableTerm {
+  const factory _LocalAnyMatch(final List<String> terms) = _$LocalAnyMatchImpl;
+
+  List<String> get terms;
+  @JsonKey(ignore: true)
+  _$$LocalAnyMatchImplCopyWith<_$LocalAnyMatchImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -455,6 +630,7 @@ class _$LocalExactMatchImpl implements _LocalExactMatch {
   TResult when<TResult extends Object?>({
     required TResult Function(List<String> terms) global,
     required TResult Function(List<String> terms) localAllMatch,
+    required TResult Function(List<String> terms) localAnyMatch,
     required TResult Function(String term) localExactMatch,
     required TResult Function() none,
   }) {
@@ -466,6 +642,7 @@ class _$LocalExactMatchImpl implements _LocalExactMatch {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(List<String> terms)? global,
     TResult? Function(List<String> terms)? localAllMatch,
+    TResult? Function(List<String> terms)? localAnyMatch,
     TResult? Function(String term)? localExactMatch,
     TResult? Function()? none,
   }) {
@@ -477,6 +654,7 @@ class _$LocalExactMatchImpl implements _LocalExactMatch {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(List<String> terms)? global,
     TResult Function(List<String> terms)? localAllMatch,
+    TResult Function(List<String> terms)? localAnyMatch,
     TResult Function(String term)? localExactMatch,
     TResult Function()? none,
     required TResult orElse(),
@@ -492,6 +670,7 @@ class _$LocalExactMatchImpl implements _LocalExactMatch {
   TResult map<TResult extends Object?>({
     required TResult Function(_Global value) global,
     required TResult Function(_LocalAllMatch value) localAllMatch,
+    required TResult Function(_LocalAnyMatch value) localAnyMatch,
     required TResult Function(_LocalExactMatch value) localExactMatch,
     required TResult Function(_None value) none,
   }) {
@@ -503,6 +682,7 @@ class _$LocalExactMatchImpl implements _LocalExactMatch {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Global value)? global,
     TResult? Function(_LocalAllMatch value)? localAllMatch,
+    TResult? Function(_LocalAnyMatch value)? localAnyMatch,
     TResult? Function(_LocalExactMatch value)? localExactMatch,
     TResult? Function(_None value)? none,
   }) {
@@ -514,6 +694,7 @@ class _$LocalExactMatchImpl implements _LocalExactMatch {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Global value)? global,
     TResult Function(_LocalAllMatch value)? localAllMatch,
+    TResult Function(_LocalAnyMatch value)? localAnyMatch,
     TResult Function(_LocalExactMatch value)? localExactMatch,
     TResult Function(_None value)? none,
     required TResult orElse(),
@@ -573,6 +754,7 @@ class _$NoneImpl implements _None {
   TResult when<TResult extends Object?>({
     required TResult Function(List<String> terms) global,
     required TResult Function(List<String> terms) localAllMatch,
+    required TResult Function(List<String> terms) localAnyMatch,
     required TResult Function(String term) localExactMatch,
     required TResult Function() none,
   }) {
@@ -584,6 +766,7 @@ class _$NoneImpl implements _None {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(List<String> terms)? global,
     TResult? Function(List<String> terms)? localAllMatch,
+    TResult? Function(List<String> terms)? localAnyMatch,
     TResult? Function(String term)? localExactMatch,
     TResult? Function()? none,
   }) {
@@ -595,6 +778,7 @@ class _$NoneImpl implements _None {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(List<String> terms)? global,
     TResult Function(List<String> terms)? localAllMatch,
+    TResult Function(List<String> terms)? localAnyMatch,
     TResult Function(String term)? localExactMatch,
     TResult Function()? none,
     required TResult orElse(),
@@ -610,6 +794,7 @@ class _$NoneImpl implements _None {
   TResult map<TResult extends Object?>({
     required TResult Function(_Global value) global,
     required TResult Function(_LocalAllMatch value) localAllMatch,
+    required TResult Function(_LocalAnyMatch value) localAnyMatch,
     required TResult Function(_LocalExactMatch value) localExactMatch,
     required TResult Function(_None value) none,
   }) {
@@ -621,6 +806,7 @@ class _$NoneImpl implements _None {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Global value)? global,
     TResult? Function(_LocalAllMatch value)? localAllMatch,
+    TResult? Function(_LocalAnyMatch value)? localAnyMatch,
     TResult? Function(_LocalExactMatch value)? localExactMatch,
     TResult? Function(_None value)? none,
   }) {
@@ -632,6 +818,7 @@ class _$NoneImpl implements _None {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Global value)? global,
     TResult Function(_LocalAllMatch value)? localAllMatch,
+    TResult Function(_LocalAnyMatch value)? localAnyMatch,
     TResult Function(_LocalExactMatch value)? localExactMatch,
     TResult Function(_None value)? none,
     required TResult orElse(),

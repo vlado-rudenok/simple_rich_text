@@ -7,8 +7,9 @@ extension SearchResults on String {
     final lines = split(_char).map((e) => e.startsWith('{tap') ? '$_char$e$_char' : e);
 
     return term.when(
-      global: (terms) => lines.map((e) => e.highlightAllMatchedWordFor(terms)).join(),
-      localAllMatch: (terms) => lines.map((e) => e.highlightAllMatchedWordFor(terms)).join(),
+      global: (terms) => lines.map((e) => e.highlightAllMatchedWordFor(terms, exactMatch: true)).join(),
+      localAllMatch: (terms) => lines.map((e) => e.highlightAllMatchedWordFor(terms, exactMatch: true)).join(),
+      localAnyMatch: (terms) => lines.map((e) => e.highlightAllMatchedWordFor(terms, exactMatch: false)).join(),
       localExactMatch: (terms) => lines.map((e) => e.highlightExactMathFor(terms)).join(),
       none: () => this,
     );
@@ -16,9 +17,9 @@ extension SearchResults on String {
 }
 
 extension on String {
-  String highlightAllMatchedWordFor(List<String> terms) => replaceAllMapped(
+  String highlightAllMatchedWordFor(List<String> terms, {required bool exactMatch}) => replaceAllMapped(
         RegExp(
-          terms.map(RegExp.escape).map((e) => e.contains(r'\') ? e : '\\b$e\\b').join('|'),
+          terms.map(RegExp.escape).map((e) => !exactMatch || e.contains(r'\') ? e : '\\b$e\\b').join('|'),
           caseSensitive: false,
         ),
         (match) {

@@ -8,6 +8,8 @@ class SearchableTerm with _$SearchableTerm {
 
   const factory SearchableTerm.localAllMatch(List<String> terms) = _LocalAllMatch;
 
+  const factory SearchableTerm.localAnyMatch(List<String> terms) = _LocalAnyMatch;
+
   const factory SearchableTerm.localExactMatch(String term) = _LocalExactMatch;
 
   const factory SearchableTerm.none() = _None;
