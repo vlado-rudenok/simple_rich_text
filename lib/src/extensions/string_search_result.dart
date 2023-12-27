@@ -4,7 +4,7 @@ extension SearchResults on String {
   String get _char => SimpleRichTextMarkdown.filledCircle.rawValue;
 
   String highlightSearchResult(SearchableTerm term) {
-    final lines = split(_char).map((e) => e.startsWith('{tap') ? '$_char$e$_char' : e);
+    final lines = split(_char).map((e) => e.startsWith('{backgroundColor') ? '$_char$e$_char' : e);
 
     return term.when(
       global: (terms) => lines.map((e) => e.highlightAllMatchedWordFor(terms, exactMatch: true)).join(),
@@ -38,7 +38,7 @@ extension on String {
       });
 
   String wrapWithHighlightsKeyword(String rawText, String wrappedText) {
-    final keyword = RegExp(r'\{tap:.*}').firstMatch(this)?.group(0);
+    final keyword = RegExp(r'\{backgroundColor:.*}').firstMatch(this)?.group(0);
 
     if (keyword == null || !startsWith(_char)) {
       return wrappedText;

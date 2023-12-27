@@ -15,5 +15,5 @@ enum SimpleRichTextMarkdown {
   static String get allChars => allCharsList.join();
   static String get allCharsPattern => '[$allChars]';
 
-  static String tapableBackgroundColor(String color, String id) => '{tap:$id;backgroundColor:$color}';
+  static String tapableBackgroundColor(String color, String id) => '{backgroundColor:$color;tap:$id}';
 }
