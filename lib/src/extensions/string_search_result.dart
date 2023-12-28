@@ -19,12 +19,21 @@ extension SearchResults on String {
 extension on String {
   String highlightAllMatchedWordFor(List<String> terms, {required bool exactMatch}) {
     final isCyrilic = RegExp('[а-яА-ЯЁё]').hasMatch(terms.first);
-    final prefix = isCyrilic ? r'(?<=^|\s|[.,!?])' : r'\b';
-    final sufix = isCyrilic ? r'(?=\s|\$|[.,!?])' : r'\b';
+    String cyrilicExp(String term) => '(?<=^|\\s|[.,!?])$term(?=\\s|\$|[.,!?])';
+    String nonCyrilicExp(String term) => '\\b$term\\b';
+
     return replaceAllMapped(
       RegExp(
-        // ignore: prefer_interpolation_to_compose_strings
-        terms.map(RegExp.escape).map((e) => !exactMatch || e.contains(r'\') ? e : '$prefix$e$sufix').join('|') + '|',
+        terms
+            .map(RegExp.escape)
+            .map(
+              (e) => !exactMatch || e.contains(r'\')
+                  ? e
+                  : isCyrilic
+                      ? cyrilicExp(e)
+                      : nonCyrilicExp(e),
+            )
+            .join('|'),
         caseSensitive: false,
       ),
       (match) {
