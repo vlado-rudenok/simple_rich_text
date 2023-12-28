@@ -17,18 +17,24 @@ extension SearchResults on String {
 }
 
 extension on String {
-  String highlightAllMatchedWordFor(List<String> terms, {required bool exactMatch}) => replaceAllMapped(
-        RegExp(
-          terms.map(RegExp.escape).map((e) => !exactMatch || e.contains(r'\') ? e : '\\b$e\\b').join('|'),
-          caseSensitive: false,
-        ),
-        (match) {
-          final matchedWord = match.group(0)!;
-          final result = '^{searchResult:search_result}$matchedWord^';
+  String highlightAllMatchedWordFor(List<String> terms, {required bool exactMatch}) {
+    final isCyrilic = RegExp('[а-яА-ЯЁё]').hasMatch(terms.first);
+    final prefix = isCyrilic ? r'(?<=^|\s|[.,!?])' : r'\b';
+    final sufix = isCyrilic ? r'(?=\s|\$|[.,!?])' : r'\b';
+    return replaceAllMapped(
+      RegExp(
+        // ignore: prefer_interpolation_to_compose_strings
+        terms.map(RegExp.escape).map((e) => !exactMatch || e.contains(r'\') ? e : '$prefix$e$sufix').join('|') + '|',
+        caseSensitive: false,
+      ),
+      (match) {
+        final matchedWord = match.group(0)!;
+        final result = '^{searchResult:search_result}$matchedWord^';
 
-          return wrapWithHighlightsKeyword(matchedWord, result);
-        },
-      );
+        return wrapWithHighlightsKeyword(matchedWord, result);
+      },
+    );
+  }
 
   String highlightExactMathFor(String term) =>
       replaceAllMapped(RegExp(RegExp.escape(term), caseSensitive: false), (match) {

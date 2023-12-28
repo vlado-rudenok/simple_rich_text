@@ -63,7 +63,6 @@ extension Splitable on String {
         style: textStyle,
       );
     } else {
-      print(map);
       return GlobalSpan(
         globalKey: map.containsKey('searchResult') || map.containsKey('navAnchor') ? GlobalKey() : null,
         child: TextSpan(
