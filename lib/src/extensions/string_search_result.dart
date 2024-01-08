@@ -9,7 +9,7 @@ extension SearchResults on String {
     return term.when(
       wholeWordsMatches: (terms) => lines.map((e) => e.highlightAllMatchedWordFor(terms, exactMatch: true)).join(),
       partialWordsMatches: (terms) => lines.map((e) => e.highlightAllMatchedWordFor(terms, exactMatch: false)).join(),
-      exactMatch: (terms) => lines.map((e) => e.highlightExactMathFor(terms)).join(),
+      exactMatch: (term) => lines.map((e) => e.highlightExactMathFor(term.trim())).join(),
       navigateOnly: () => '^{navAnchor:nav_anchor}^$this',
       none: () => this,
     );
@@ -18,13 +18,19 @@ extension SearchResults on String {
 
 extension on String {
   String highlightAllMatchedWordFor(List<String> terms, {required bool exactMatch}) {
-    final isCyrilic = RegExp('[а-яА-ЯЁё]').hasMatch(terms.first);
+    final updatedTerms = terms.map((e) => e.trim()).where((element) => element.length > 1).toSet().toList();
+
+    if (updatedTerms.isEmpty) {
+      return this;
+    }
+
+    final isCyrilic = RegExp('[а-яА-ЯЁё]').hasMatch(updatedTerms.first);
     String cyrilicExp(String term) => '(?<=^|\\s|[.,!?])$term(?=\\s|\$|[.,!?])';
     String nonCyrilicExp(String term) => '\\b$term\\b';
 
     return replaceAllMapped(
       RegExp(
-        terms
+        updatedTerms
             .map(RegExp.escape)
             .map(
               (e) => !exactMatch || e.contains(r'\')
