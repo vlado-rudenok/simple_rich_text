@@ -5,8 +5,8 @@ import 'colors.dart';
 import 'commands_handler.dart';
 import 'error.dart';
 import 'extensions_map.dart';
-import 'global_span.dart';
 import 'logger.dart';
+import 'models/global_span.dart';
 
 extension Splitable on String {
   List<String> splitWithChars(String chars) => split(RegExp(chars));
@@ -29,6 +29,7 @@ extension Splitable on String {
     required Set<String> set,
     required String? commandsList,
     required TextStyle style,
+    required void Function(String)? onTap,
   }) {
     log('wrap: $this set=$set');
 
@@ -57,13 +58,17 @@ extension Splitable on String {
                 caption: this,
                 map: map,
                 context: context,
+                onTap: onTap,
               ),
         style: textStyle,
       );
     } else {
       return GlobalSpan(
-        globalKey: map.containsKey('searchResult') ? GlobalKey() : null,
-        child: TextSpan(text: this, style: textStyle),
+        globalKey: map.containsKey('searchResult') || map.containsKey('navAnchor') ? GlobalKey() : null,
+        child: TextSpan(
+          text: this,
+          style: textStyle,
+        ),
       );
     }
   }
@@ -76,6 +81,7 @@ extension Splitable on String {
     required String? commandsList,
     required TextStyle style,
     required bool acceptNext,
+    required void Function(String)? onTap,
   }) {
     if (this == r'\') {
       final c = line.substring(index + 1, index + 2);
@@ -85,6 +91,7 @@ extension Splitable on String {
         set: set,
         commandsList: commandsList,
         style: style,
+        onTap: onTap,
       );
       return (item, false);
     } else {
@@ -156,23 +163,4 @@ extension Splitable on String {
     );
     return textStyle;
   }
-
-  String highlightAllMatchedWordFor({
-    required List<String> terms,
-  }) =>
-      replaceAllMapped(
-        RegExp(
-          terms.map(RegExp.escape).map((e) => e.contains(r'\') ? e : '\\b$e\\b').join('|'),
-          caseSensitive: false,
-        ),
-        (match) {
-          final matchedWord = match.group(0)!;
-          return '^{searchResult:search_result}$matchedWord^';
-        },
-      );
-
-  String highlightExactMathFor(String term) => replaceAllMapped(
-        RegExp(RegExp.escape(term), caseSensitive: false),
-        (match) => '^{searchResult:search_result}${match.group(0)}^',
-      );
 }

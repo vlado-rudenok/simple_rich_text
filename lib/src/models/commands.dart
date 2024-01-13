@@ -1,4 +1,5 @@
 enum Commands {
+  tap('tap'),
   openLink('http'),
   popRoute('pop'),
   pushRoute('push'),
