@@ -24,20 +24,12 @@ extension on String {
       return this;
     }
 
-    final isCyrilic = RegExp('[а-яА-ЯЁё]').hasMatch(updatedTerms.first);
-    String cyrilicExp(String term) => '(?<=^|\\s|[.,!?])$term(?=\\s|\$|[.,!?])';
-    String nonCyrilicExp(String term) => '\\b$term\\b';
-
     return replaceAllMapped(
       RegExp(
         updatedTerms
             .map(RegExp.escape)
             .map(
-              (e) => !exactMatch || e.contains(r'\')
-                  ? e
-                  : isCyrilic
-                      ? cyrilicExp(e)
-                      : nonCyrilicExp(e),
+              (e) => !exactMatch || e.contains(r'\') ? e : '(?<=^|\\s|[.,!?])$e(?=\\s|\$|[.,!?])',
             )
             .join('|'),
         caseSensitive: false,
