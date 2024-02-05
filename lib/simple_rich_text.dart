@@ -16,6 +16,8 @@ class SimpleRichText extends StatelessWidget with TextProcessing {
     required this.text,
     required this.config,
     required this.style,
+    this.leading,
+    this.trailing,
     this.searchTerm = const SearchableTerm.none(),
     super.key,
     this.onUpdate,
@@ -27,6 +29,8 @@ class SimpleRichText extends StatelessWidget with TextProcessing {
   final SearchableTerm searchTerm;
   final SimpleRichTextConfig config;
   final TextStyle style;
+  final WidgetSpan? leading;
+  final WidgetSpan? trailing;
   final void Function(List<GlobalKey>)? onUpdate;
   final void Function(String)? onTap;
 
@@ -41,8 +45,18 @@ class SimpleRichText extends StatelessWidget with TextProcessing {
       style: style,
     );
     final children = [
-      if (config.textIndent > 0) WidgetSpan(child: SizedBox(width: config.textIndent)),
+      if (config.textIndent > 0)
+        WidgetSpan(
+          child: SizedBox(
+            width: config.textIndent,
+            // Workaround: When text is wrapped with SelectionArea,
+            // first line has incorrect selection position
+            child: const Text(''),
+          ),
+        ),
+      if (leading != null) leading!,
       ...formatted,
+      if (trailing != null) trailing!,
     ];
 
     onUpdate?.call(children.whereType<GlobalSpan>().map((e) => e.globalKey).whereType<GlobalKey>().toList());
