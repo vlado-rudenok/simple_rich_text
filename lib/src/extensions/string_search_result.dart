@@ -24,12 +24,16 @@ extension on String {
       return this;
     }
 
+    final markdownChars = SimpleRichTextMarkdown.allChars;
+    const punctuationChars = r'.,!?;:(){}\[\]<>„”…"';
+    final chars = '$punctuationChars$markdownChars';
+
     return replaceAllMapped(
       RegExp(
         updatedTerms
             .map(RegExp.escape)
             .map(
-              (e) => !exactMatch || e.contains(r'\') ? e : '(?<=^|\\s|[.,!?])$e(?=\\s|\$|[.,!?])',
+              (e) => !exactMatch || e.contains(r'\') ? e : '(?<=^|\\s|[$chars])$e(?=\\s|\$|[$chars])',
             )
             .join('|'),
         caseSensitive: false,
