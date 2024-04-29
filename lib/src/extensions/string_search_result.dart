@@ -25,7 +25,7 @@ extension on String {
     }
 
     final markdownChars = SimpleRichTextMarkdown.allChars;
-    const punctuationChars = '.,!?;:-(){}\\[\\]<>„”…"“«»\'';
+    const punctuationChars = r'.,!?;:-(){}\[\]<>„”…"“«»';
     final chars = '$punctuationChars$markdownChars';
 
     return replaceAllMapped(
