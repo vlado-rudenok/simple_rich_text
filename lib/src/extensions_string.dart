@@ -63,8 +63,12 @@ extension Splitable on String {
         style: textStyle,
       );
     } else {
+      final paragraph = set.contains('@') ? int.tryParse(this) : null;
+
       return GlobalSpan(
-        globalKey: map.containsKey('searchResult') || map.containsKey('navAnchor') ? GlobalKey() : null,
+        globalKey: map.containsKey('searchResult') || map.containsKey('navAnchor') || paragraph != null
+            ? ExtendedGlobalKey(paragraph: paragraph)
+            : null,
         child: TextSpan(
           text: this,
           style: textStyle,

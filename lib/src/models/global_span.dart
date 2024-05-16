@@ -1,5 +1,12 @@
 import 'package:flutter/cupertino.dart';
 
+class ExtendedGlobalKey {
+  ExtendedGlobalKey({required this.paragraph}) : key = GlobalKey();
+
+  final GlobalKey key;
+  final int? paragraph;
+}
+
 class GlobalSpan extends TextSpan {
   GlobalSpan({
     required this.child,
@@ -9,7 +16,7 @@ class GlobalSpan extends TextSpan {
             if (globalKey != null)
               WidgetSpan(
                 child: SizedBox.fromSize(
-                  key: globalKey,
+                  key: globalKey.key,
                   size: Size.zero,
                 ),
               ),
@@ -17,6 +24,6 @@ class GlobalSpan extends TextSpan {
           ],
         );
 
-  final GlobalKey? globalKey;
+  final ExtendedGlobalKey? globalKey;
   final TextSpan child;
 }
