@@ -7,8 +7,7 @@ extension SearchResults on String {
     final lines = split(_char).map((e) => e.startsWith('{backgroundColor') ? '$_char$e$_char' : e);
 
     return term.when(
-      wholeWordsMatches: (terms) => lines.map((e) => e.highlightAllMatchedWordFor(terms, exactMatch: true)).join(),
-      partialWordsMatches: (terms) => lines.map((e) => e.highlightAllMatchedWordFor(terms, exactMatch: false)).join(),
+      partialWordsMatches: (terms) => lines.map((e) => e.highlightAllMatchedWordFor(terms)).join(),
       exactMatch: (term) => lines.map((e) => e.highlightExactMathFor(term.trim())).join(),
       navigateOnly: () => '^{navAnchor:nav_anchor}^$this',
       none: () => this,
@@ -17,7 +16,7 @@ extension SearchResults on String {
 }
 
 extension on String {
-  String highlightAllMatchedWordFor(List<String> terms, {required bool exactMatch}) {
+  String highlightAllMatchedWordFor(List<String> terms) {
     final updatedTerms = terms.map((e) => e.trim()).where((element) => element.length > 1).toSet().toList();
 
     if (updatedTerms.isEmpty) {
@@ -33,7 +32,7 @@ extension on String {
         updatedTerms
             .map(RegExp.escape)
             .map(
-              (e) => !exactMatch || e.contains(r'\') ? e : '(?<=^|\\s|[$chars])$e(?=\\s|\$|[$chars])',
+              (e) => e.contains(r'\') ? e : '(?<=^|\\s|[$chars])$e(?=\\s|\$|[$chars])',
             )
             .join('|'),
         caseSensitive: false,
