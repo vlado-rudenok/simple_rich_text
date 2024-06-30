@@ -7,9 +7,7 @@ extension SearchResults on String {
     final lines = split(_char).map((e) => e.startsWith('{backgroundColor') ? '$_char$e$_char' : e);
 
     return term.when(
-      wholeWordsMatches: (terms) => lines.map((e) => e.highlightAllMatchedWordFor(terms, exactMatch: true)).join(),
-      partialWordsMatches: (terms) => lines.map((e) => e.highlightAllMatchedWordFor(terms, exactMatch: false)).join(),
-      exactMatch: (term) => lines.map((e) => e.highlightExactMathFor(term.trim())).join(),
+      matchTerms: (terms) => lines.map((e) => e.highlightAllMatchedWordFor(terms)).join(),
       navigateOnly: () => '^{navAnchor:nav_anchor}^$this',
       none: () => this,
     );
@@ -17,25 +15,16 @@ extension SearchResults on String {
 }
 
 extension on String {
-  String highlightAllMatchedWordFor(List<String> terms, {required bool exactMatch}) {
-    final updatedTerms = terms.map((e) => e.trim()).where((element) => element.length > 1).toSet().toList();
+  String highlightAllMatchedWordFor(List<String> terms) {
+    final updatedTerms = terms.map((e) => e.trim()).where((element) => element.isNotEmpty).toSet().toList();
 
     if (updatedTerms.isEmpty) {
       return this;
     }
 
-    final markdownChars = SimpleRichTextMarkdown.allChars;
-    const punctuationChars = r'.,!?;:(){}\[\]<>„”…"“«»\-’';
-    final chars = '$punctuationChars$markdownChars';
-
     return replaceAllMapped(
       RegExp(
-        updatedTerms
-            .map(RegExp.escape)
-            .map(
-              (e) => !exactMatch || e.contains(r'\') ? e : '(?<=^|\\s|[$chars])$e(?=\\s|\$|[$chars])',
-            )
-            .join('|'),
+        updatedTerms.map(RegExp.escape).join('|'),
         caseSensitive: false,
       ),
       (match) {
@@ -46,13 +35,6 @@ extension on String {
       },
     );
   }
-
-  String highlightExactMathFor(String term) =>
-      replaceAllMapped(RegExp(RegExp.escape(term), caseSensitive: false), (match) {
-        final matchedWord = match.group(0)!;
-        final result = '^{searchResult:search_result}$matchedWord^';
-        return wrapWithHighlightsKeyword(matchedWord, result);
-      });
 
   String wrapWithHighlightsKeyword(String rawText, String wrappedText) {
     final keyword = RegExp(r'\{backgroundColor:.*}').firstMatch(this)?.group(0);
