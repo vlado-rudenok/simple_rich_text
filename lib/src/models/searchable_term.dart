@@ -4,7 +4,9 @@ part 'searchable_term.freezed.dart';
 
 @freezed
 class SearchableTerm with _$SearchableTerm {
-  const factory SearchableTerm.matchTerms(List<String> terms) = _WholeWordsMatches;
+  const factory SearchableTerm.matchAllTerms(List<String> terms) = _MatchAllTerms;
+
+  const factory SearchableTerm.matchAnyTerms(List<String> terms) = _MatchAnyTerms;
 
   const factory SearchableTerm.navigateOnly() = _NavigateOnly;
 

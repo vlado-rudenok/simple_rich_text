@@ -7,7 +7,8 @@ extension SearchResults on String {
     final lines = split(_char).map((e) => e.startsWith('{backgroundColor') ? '$_char$e$_char' : e);
 
     return term.when(
-      matchTerms: (terms) => lines.map((e) => e.highlightAllMatchedWordFor(terms)).join(),
+      matchAllTerms: (terms) => lines.map((e) => e.highlightMatchedWordFor(terms, whenAllTermsAreMatch: true)).join(),
+      matchAnyTerms: (terms) => lines.map((e) => e.highlightMatchedWordFor(terms, whenAllTermsAreMatch: false)).join(),
       navigateOnly: () => '^{navAnchor:nav_anchor}^$this',
       none: () => this,
     );
@@ -15,10 +16,14 @@ extension SearchResults on String {
 }
 
 extension on String {
-  String highlightAllMatchedWordFor(List<String> terms) {
+  String highlightMatchedWordFor(List<String> terms, {required bool whenAllTermsAreMatch}) {
     final updatedTerms = terms.map((e) => e.trim()).where((element) => element.isNotEmpty).toSet().toList();
 
     if (updatedTerms.isEmpty) {
+      return this;
+    }
+
+    if (whenAllTermsAreMatch && !terms.every((term) => RegExp(term).hasMatch(this))) {
       return this;
     }
 
