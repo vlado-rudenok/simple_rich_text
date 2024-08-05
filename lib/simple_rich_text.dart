@@ -21,6 +21,7 @@ class SimpleRichText extends StatelessWidget with TextProcessing {
     this.searchTerm = const SearchableTerm.none(),
     super.key,
     this.onUpdate,
+    this.onTextGenerated,
     this.onParagraphUpdate,
     this.onTap,
   });
@@ -33,6 +34,7 @@ class SimpleRichText extends StatelessWidget with TextProcessing {
   final WidgetSpan? leading;
   final WidgetSpan? trailing;
   final void Function(List<GlobalKey>)? onUpdate;
+  final void Function(TextSpan)? onTextGenerated;
   final void Function(List<(int, GlobalKey)>)? onParagraphUpdate;
   final void Function(String)? onTap;
 
@@ -82,6 +84,8 @@ class SimpleRichText extends StatelessWidget with TextProcessing {
     );
 
     final textSpan = TextSpan(children: children);
+
+    onTextGenerated?.call(textSpan);
 
     final textWidget = Text.rich(
       textSpan,
