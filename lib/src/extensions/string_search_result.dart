@@ -23,7 +23,7 @@ extension on String {
       return this;
     }
 
-    if (whenAllTermsAreMatch && !terms.every((term) => RegExp(term).hasMatch(this))) {
+    if (whenAllTermsAreMatch && !terms.every((term) => RegExp(term, caseSensitive: false).hasMatch(this))) {
       return this;
     }
 
