@@ -6,18 +6,18 @@ extension SearchResults on String {
   String highlightSearchResult(SearchableTerm term) {
     final lines = split(_char).map((e) => e.startsWith('{backgroundColor') ? '$_char$e$_char' : e);
 
-    return term.when(
-      matchAllTerms:
-          (terms) =>
-              lines.map((e) => e.highlightMatchedWordFor(terms, whenAllTermsAreMatch: true)).join(),
-      matchAnyTerms:
-          (terms) =>
-              lines
-                  .map((e) => e.highlightMatchedWordFor(terms, whenAllTermsAreMatch: false))
-                  .join(),
-      navigateOnly: () => '^{navAnchor:nav_anchor}^$this',
-      none: () => this,
-    );
+    return switch (term.type) {
+      SearchableTermType.matchAllTerms =>
+        lines
+            .map((e) => e.highlightMatchedWordFor(term.terms ?? [], whenAllTermsAreMatch: true))
+            .join(),
+      SearchableTermType.matchAnyTerms =>
+        lines
+            .map((e) => e.highlightMatchedWordFor(term.terms ?? [], whenAllTermsAreMatch: false))
+            .join(),
+      SearchableTermType.navigateOnly => '^{navAnchor:nav_anchor}^$this',
+      SearchableTermType.none => this,
+    };
   }
 }
 
