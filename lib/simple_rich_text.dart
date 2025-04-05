@@ -1,4 +1,4 @@
-library simple_rich_text;
+library;
 
 import 'package:flutter/material.dart';
 

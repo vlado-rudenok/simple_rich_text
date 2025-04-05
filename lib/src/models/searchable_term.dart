@@ -1,14 +1,18 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
+class SearchableTerm {
+  const SearchableTerm._(this.terms, this.type);
 
-part 'searchable_term.freezed.dart';
+  const SearchableTerm.navigateOnly() : this._(null, SearchableTermType.navigateOnly);
 
-@freezed
-class SearchableTerm with _$SearchableTerm {
-  const factory SearchableTerm.matchAllTerms(List<String> terms) = _MatchAllTerms;
+  const SearchableTerm.none() : this._(null, SearchableTermType.none);
 
-  const factory SearchableTerm.matchAnyTerms(List<String> terms) = _MatchAnyTerms;
+  factory SearchableTerm.matchAllTerms(List<String> terms) =>
+      SearchableTerm._(terms, SearchableTermType.matchAllTerms);
 
-  const factory SearchableTerm.navigateOnly() = _NavigateOnly;
+  factory SearchableTerm.matchAnyTerms(List<String> terms) =>
+      SearchableTerm._(terms, SearchableTermType.matchAnyTerms);
 
-  const factory SearchableTerm.none() = _None;
+  final List<String>? terms;
+  final SearchableTermType type;
 }
+
+enum SearchableTermType { matchAllTerms, matchAnyTerms, navigateOnly, none }
