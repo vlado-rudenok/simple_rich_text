@@ -1,7 +1,7 @@
 name: simple_rich_text
 description: Display a Dart string in Flutter using simple rich text characters.
 publish_to: "none"
-version: 2.1.7
+version: 2.1.8
 
 environment:
   sdk: ">=3.7.2 <4.0.0"
