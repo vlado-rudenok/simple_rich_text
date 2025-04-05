@@ -33,17 +33,11 @@ class CommandHandler {
     } else if (map.containsKey(Commands.tap.rawValue)) {
       onTap?.call(map[Commands.tap.rawValue]!);
     } else {
-      CommandHandler._onCommandPop(
-        caption: caption,
-        context: context,
-      );
+      CommandHandler._onCommandPop(caption: caption, context: context);
     }
   }
 
-  static Future<void> _onCommandLink({
-    required String value,
-    required String caption,
-  }) async {
+  static Future<void> _onCommandLink({required String value, required String caption}) async {
     log('TAP: HTTP: $caption => /$value');
 
     try {
@@ -58,10 +52,7 @@ class CommandHandler {
     }
   }
 
-  static void _onCommandPop({
-    required String caption,
-    required BuildContext context,
-  }) {
+  static void _onCommandPop({required String caption, required BuildContext context}) {
     log('TAP: $caption => pop');
     Navigator.pop(context);
   }

@@ -119,3 +119,5 @@ app.*.symbols
 !/dev/ci/**/Gemfile.lock
 !/.idea/bible-quiz-flutter.iml
 !/.idea/.gitignore
+
+.fvm/*

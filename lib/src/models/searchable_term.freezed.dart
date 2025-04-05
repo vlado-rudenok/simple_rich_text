@@ -12,7 +12,8 @@ part of 'searchable_term.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
+  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
+);
 
 /// @nodoc
 mixin _$SearchableTerm {
@@ -22,16 +23,14 @@ mixin _$SearchableTerm {
     required TResult Function(List<String> terms) matchAnyTerms,
     required TResult Function() navigateOnly,
     required TResult Function() none,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(List<String> terms)? matchAllTerms,
     TResult? Function(List<String> terms)? matchAnyTerms,
     TResult? Function()? navigateOnly,
     TResult? Function()? none,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(List<String> terms)? matchAllTerms,
@@ -39,24 +38,21 @@ mixin _$SearchableTerm {
     TResult Function()? navigateOnly,
     TResult Function()? none,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_MatchAllTerms value) matchAllTerms,
     required TResult Function(_MatchAnyTerms value) matchAnyTerms,
     required TResult Function(_NavigateOnly value) navigateOnly,
     required TResult Function(_None value) none,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_MatchAllTerms value)? matchAllTerms,
     TResult? Function(_MatchAnyTerms value)? matchAnyTerms,
     TResult? Function(_NavigateOnly value)? navigateOnly,
     TResult? Function(_None value)? none,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_MatchAllTerms value)? matchAllTerms,
@@ -64,14 +60,12 @@ mixin _$SearchableTerm {
     TResult Function(_NavigateOnly value)? navigateOnly,
     TResult Function(_None value)? none,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class $SearchableTermCopyWith<$Res> {
-  factory $SearchableTermCopyWith(
-          SearchableTerm value, $Res Function(SearchableTerm) then) =
+  factory $SearchableTermCopyWith(SearchableTerm value, $Res Function(SearchableTerm) then) =
       _$SearchableTermCopyWithImpl<$Res, SearchableTerm>;
 }
 
@@ -89,8 +83,9 @@ class _$SearchableTermCopyWithImpl<$Res, $Val extends SearchableTerm>
 /// @nodoc
 abstract class _$$MatchAllTermsImplCopyWith<$Res> {
   factory _$$MatchAllTermsImplCopyWith(
-          _$MatchAllTermsImpl value, $Res Function(_$MatchAllTermsImpl) then) =
-      __$$MatchAllTermsImplCopyWithImpl<$Res>;
+    _$MatchAllTermsImpl value,
+    $Res Function(_$MatchAllTermsImpl) then,
+  ) = __$$MatchAllTermsImplCopyWithImpl<$Res>;
   @useResult
   $Res call({List<String> terms});
 }
@@ -100,20 +95,21 @@ class __$$MatchAllTermsImplCopyWithImpl<$Res>
     extends _$SearchableTermCopyWithImpl<$Res, _$MatchAllTermsImpl>
     implements _$$MatchAllTermsImplCopyWith<$Res> {
   __$$MatchAllTermsImplCopyWithImpl(
-      _$MatchAllTermsImpl _value, $Res Function(_$MatchAllTermsImpl) _then)
-      : super(_value, _then);
+    _$MatchAllTermsImpl _value,
+    $Res Function(_$MatchAllTermsImpl) _then,
+  ) : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? terms = null,
-  }) {
-    return _then(_$MatchAllTermsImpl(
-      null == terms
-          ? _value._terms
-          : terms // ignore: cast_nullable_to_non_nullable
-              as List<String>,
-    ));
+  $Res call({Object? terms = null}) {
+    return _then(
+      _$MatchAllTermsImpl(
+        null == terms
+            ? _value._terms
+            : terms // ignore: cast_nullable_to_non_nullable
+                as List<String>,
+      ),
+    );
   }
 }
 
@@ -144,8 +140,7 @@ class _$MatchAllTermsImpl implements _MatchAllTerms {
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(_terms));
+  int get hashCode => Object.hash(runtimeType, const DeepCollectionEquality().hash(_terms));
 
   @JsonKey(ignore: true)
   @override
@@ -240,8 +235,9 @@ abstract class _MatchAllTerms implements SearchableTerm {
 /// @nodoc
 abstract class _$$MatchAnyTermsImplCopyWith<$Res> {
   factory _$$MatchAnyTermsImplCopyWith(
-          _$MatchAnyTermsImpl value, $Res Function(_$MatchAnyTermsImpl) then) =
-      __$$MatchAnyTermsImplCopyWithImpl<$Res>;
+    _$MatchAnyTermsImpl value,
+    $Res Function(_$MatchAnyTermsImpl) then,
+  ) = __$$MatchAnyTermsImplCopyWithImpl<$Res>;
   @useResult
   $Res call({List<String> terms});
 }
@@ -251,20 +247,21 @@ class __$$MatchAnyTermsImplCopyWithImpl<$Res>
     extends _$SearchableTermCopyWithImpl<$Res, _$MatchAnyTermsImpl>
     implements _$$MatchAnyTermsImplCopyWith<$Res> {
   __$$MatchAnyTermsImplCopyWithImpl(
-      _$MatchAnyTermsImpl _value, $Res Function(_$MatchAnyTermsImpl) _then)
-      : super(_value, _then);
+    _$MatchAnyTermsImpl _value,
+    $Res Function(_$MatchAnyTermsImpl) _then,
+  ) : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? terms = null,
-  }) {
-    return _then(_$MatchAnyTermsImpl(
-      null == terms
-          ? _value._terms
-          : terms // ignore: cast_nullable_to_non_nullable
-              as List<String>,
-    ));
+  $Res call({Object? terms = null}) {
+    return _then(
+      _$MatchAnyTermsImpl(
+        null == terms
+            ? _value._terms
+            : terms // ignore: cast_nullable_to_non_nullable
+                as List<String>,
+      ),
+    );
   }
 }
 
@@ -295,8 +292,7 @@ class _$MatchAnyTermsImpl implements _MatchAnyTerms {
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(_terms));
+  int get hashCode => Object.hash(runtimeType, const DeepCollectionEquality().hash(_terms));
 
   @JsonKey(ignore: true)
   @override
@@ -391,8 +387,9 @@ abstract class _MatchAnyTerms implements SearchableTerm {
 /// @nodoc
 abstract class _$$NavigateOnlyImplCopyWith<$Res> {
   factory _$$NavigateOnlyImplCopyWith(
-          _$NavigateOnlyImpl value, $Res Function(_$NavigateOnlyImpl) then) =
-      __$$NavigateOnlyImplCopyWithImpl<$Res>;
+    _$NavigateOnlyImpl value,
+    $Res Function(_$NavigateOnlyImpl) then,
+  ) = __$$NavigateOnlyImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
@@ -400,8 +397,9 @@ class __$$NavigateOnlyImplCopyWithImpl<$Res>
     extends _$SearchableTermCopyWithImpl<$Res, _$NavigateOnlyImpl>
     implements _$$NavigateOnlyImplCopyWith<$Res> {
   __$$NavigateOnlyImplCopyWithImpl(
-      _$NavigateOnlyImpl _value, $Res Function(_$NavigateOnlyImpl) _then)
-      : super(_value, _then);
+    _$NavigateOnlyImpl _value,
+    $Res Function(_$NavigateOnlyImpl) _then,
+  ) : super(_value, _then);
 }
 
 /// @nodoc
@@ -504,17 +502,15 @@ abstract class _NavigateOnly implements SearchableTerm {
 
 /// @nodoc
 abstract class _$$NoneImplCopyWith<$Res> {
-  factory _$$NoneImplCopyWith(
-          _$NoneImpl value, $Res Function(_$NoneImpl) then) =
+  factory _$$NoneImplCopyWith(_$NoneImpl value, $Res Function(_$NoneImpl) then) =
       __$$NoneImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class __$$NoneImplCopyWithImpl<$Res>
-    extends _$SearchableTermCopyWithImpl<$Res, _$NoneImpl>
+class __$$NoneImplCopyWithImpl<$Res> extends _$SearchableTermCopyWithImpl<$Res, _$NoneImpl>
     implements _$$NoneImplCopyWith<$Res> {
   __$$NoneImplCopyWithImpl(_$NoneImpl _value, $Res Function(_$NoneImpl) _then)
-      : super(_value, _then);
+    : super(_value, _then);
 }
 
 /// @nodoc
@@ -529,8 +525,7 @@ class _$NoneImpl implements _None {
 
   @override
   bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$NoneImpl);
+    return identical(this, other) || (other.runtimeType == runtimeType && other is _$NoneImpl);
   }
 
   @override

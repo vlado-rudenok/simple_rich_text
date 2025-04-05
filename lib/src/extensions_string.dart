@@ -33,16 +33,9 @@ extension Splitable on String {
   }) {
     log('wrap: $this set=$set');
 
-    final map = <String, String>{
-      if (commandsList != null) ..._parseCommands(commandsList),
-    };
+    final map = <String, String>{if (commandsList != null) ..._parseCommands(commandsList)};
 
-    final textStyle = _prepareStyle(
-      map,
-      set,
-      map.parseDecorationStyle(),
-      style,
-    );
+    final textStyle = _prepareStyle(map, set, map.parseDecorationStyle(), style);
     log('attributes: $map');
 
     if (map.containsCommands()) {
@@ -53,26 +46,26 @@ extension Splitable on String {
         // and call dispose() when the TextSpan was no longer being rendered.
         // Since TextSpan itself is @immutable, this means that you would have to manage the recognizer from outside
         // the TextSpan, e.g. in the State of a stateful widget that then hands the recognizer to the TextSpan.
-        recognizer: TapGestureRecognizer()
-          ..onTap = () async => CommandHandler.handleTap(
-                caption: this,
-                map: map,
-                context: context,
-                onTap: onTap,
-              ),
+        recognizer:
+            TapGestureRecognizer()
+              ..onTap =
+                  () async => CommandHandler.handleTap(
+                    caption: this,
+                    map: map,
+                    context: context,
+                    onTap: onTap,
+                  ),
         style: textStyle,
       );
     } else {
       final paragraph = set.contains('@') ? int.tryParse(this) : null;
 
       return GlobalSpan(
-        globalKey: map.containsKey('searchResult') || map.containsKey('navAnchor') || paragraph != null
-            ? ExtendedGlobalKey(paragraph: paragraph)
-            : null,
-        child: TextSpan(
-          text: this,
-          style: textStyle,
-        ),
+        globalKey:
+            map.containsKey('searchResult') || map.containsKey('navAnchor') || paragraph != null
+                ? ExtendedGlobalKey(paragraph: paragraph)
+                : null,
+        child: TextSpan(text: this, style: textStyle),
       );
     }
   }
@@ -135,35 +128,46 @@ extension Splitable on String {
     TextStyle style,
   ) {
     final textStyle = style.copyWith(
-      color: map.containsKey('searchResult')
-          ? Colors.black
-          : map.containsKey('color')
+      color:
+          map.containsKey('searchResult')
+              ? Colors.black
+              : map.containsKey('color')
               ? parseColor(map['color']!)
               : (set.contains('`') || set.contains('@'))
-                  ? Colors.grey
-                  : style.color,
+              ? Colors.grey
+              : style.color,
       decoration: set.contains('_') ? TextDecoration.underline : TextDecoration.none,
       fontStyle: set.contains('^') || set.contains('%') ? FontStyle.italic : FontStyle.normal,
-      fontWeight: set.contains('*')
-          ? set.contains('~')
-              ? FontWeight.normal
-              : FontWeight.bold
-          : FontWeight.normal,
+      fontWeight:
+          set.contains('*')
+              ? set.contains('~')
+                  ? FontWeight.normal
+                  : FontWeight.bold
+              : FontWeight.normal,
       fontSize: map.containsKey('fontSize') ? double.parse(map['fontSize']!) : style.fontSize,
       fontFamily: map.containsKey('fontFamily') ? '${map['fontFamily']}' : style.fontFamily,
-      backgroundColor: map.containsKey('searchResult')
-          ? parseColor(map['searchResult']!)
-          : map.containsKey('backgroundColor')
+      backgroundColor:
+          map.containsKey('searchResult')
+              ? parseColor(map['searchResult']!)
+              : map.containsKey('backgroundColor')
               ? parseColor(map['backgroundColor']!)
               : style.backgroundColor,
-      decorationColor: map.containsKey('decorationColor') ? parseColor(map['decorationColor']!) : style.decorationColor,
+      decorationColor:
+          map.containsKey('decorationColor')
+              ? parseColor(map['decorationColor']!)
+              : style.decorationColor,
       decorationStyle: textDecorationStyle ?? style.decorationStyle,
-      decorationThickness: map.containsKey('decorationThickness')
-          ? double.parse(map['decorationThickness']!)
-          : style.decorationThickness,
+      decorationThickness:
+          map.containsKey('decorationThickness')
+              ? double.parse(map['decorationThickness']!)
+              : style.decorationThickness,
       height: map.containsKey('height') ? double.parse(map['height']!) : style.height,
-      letterSpacing: map.containsKey('letterSpacing') ? double.parse(map['letterSpacing']!) : style.letterSpacing,
-      wordSpacing: map.containsKey('wordSpacing') ? double.parse(map['wordSpacing']!) : style.wordSpacing,
+      letterSpacing:
+          map.containsKey('letterSpacing')
+              ? double.parse(map['letterSpacing']!)
+              : style.letterSpacing,
+      wordSpacing:
+          map.containsKey('wordSpacing') ? double.parse(map['wordSpacing']!) : style.wordSpacing,
     );
     return textStyle;
   }

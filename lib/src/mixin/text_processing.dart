@@ -26,21 +26,20 @@ mixin TextProcessing {
 
     final linesList = text.splitIntoLines();
 
-    final items = linesList.asMap().entries.map(
-      (entry) {
-        final spansList = entry.value.splitWithChars(SimpleRichTextMarkdown.allCharsPattern);
-        if (spansList.length == 1) {
-          return [
-            TextSpan(text: entry.value, style: style),
-            if (_ifNotLastLine(entry.key, linesList)) _emptyLine,
-          ];
-        } else {
-          var index = 0;
-          var acceptNext = true;
-          String? commandsList;
+    final items =
+        linesList.asMap().entries.map((entry) {
+          final spansList = entry.value.splitWithChars(SimpleRichTextMarkdown.allCharsPattern);
+          if (spansList.length == 1) {
+            return [
+              TextSpan(text: entry.value, style: style),
+              if (_ifNotLastLine(entry.key, linesList)) _emptyLine,
+            ];
+          } else {
+            var index = 0;
+            var acceptNext = true;
+            String? commandsList;
 
-          final items = spansList.map(
-            (currentSpan) {
+            final items = spansList.map((currentSpan) {
               log('========== $currentSpan ==========');
               commandsList = null; //TRY
               if (currentSpan.isEmpty) {
@@ -104,19 +103,14 @@ mixin TextProcessing {
 
                 return [if (toggled != null) toggled, item];
               }
-            },
-          );
+            });
 
-          if (!config.allowNonClosedTags && set.isNotEmpty) {
-            throw SimpleRichTextError('not closed: $set');
+            if (!config.allowNonClosedTags && set.isNotEmpty) {
+              throw SimpleRichTextError('not closed: $set');
+            }
+            return [...items.flattened, if (_ifNotLastLine(entry.key, linesList)) _emptyLine];
           }
-          return [
-            ...items.flattened,
-            if (_ifNotLastLine(entry.key, linesList)) _emptyLine,
-          ];
-        }
-      },
-    ).flattened;
+        }).flattened;
 
     return items;
   }

@@ -8,21 +8,14 @@ class ExtendedGlobalKey {
 }
 
 class GlobalSpan extends TextSpan {
-  GlobalSpan({
-    required this.child,
-    this.globalKey,
-  }) : super(
-          children: [
-            if (globalKey != null)
-              WidgetSpan(
-                child: SizedBox.fromSize(
-                  key: globalKey.key,
-                  size: Size.zero,
-                ),
-              ),
-            child,
-          ],
-        );
+  GlobalSpan({required this.child, this.globalKey})
+    : super(
+        children: [
+          if (globalKey != null)
+            WidgetSpan(child: SizedBox.fromSize(key: globalKey.key, size: Size.zero)),
+          child,
+        ],
+      );
 
   final ExtendedGlobalKey? globalKey;
   final TextSpan child;
