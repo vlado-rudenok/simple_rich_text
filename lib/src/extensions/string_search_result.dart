@@ -15,8 +15,8 @@ extension SearchResults on String {
         lines
             .map((e) => e.highlightMatchedWordFor(term.terms ?? [], whenAllTermsAreMatch: false))
             .join(),
-      SearchableTermType.navigateOnly => '^{navAnchor:nav_anchor}^$term',
-      SearchableTermType.none => term.toString(),
+      SearchableTermType.navigateOnly => '^{navAnchor:nav_anchor}^$this',
+      SearchableTermType.none => this,
     };
   }
 }
