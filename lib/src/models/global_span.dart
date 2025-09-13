@@ -12,7 +12,9 @@ class GlobalSpan extends TextSpan {
     : super(
         children: [
           if (globalKey != null)
-            WidgetSpan(child: SizedBox.fromSize(key: globalKey.key, size: Size.zero)),
+            WidgetSpan(
+              child: SizedBox.fromSize(key: globalKey.key, size: Size.zero),
+            ),
           child,
         ],
       );
