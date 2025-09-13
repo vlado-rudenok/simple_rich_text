@@ -23,8 +23,11 @@ extension SearchResults on String {
 
 extension on String {
   String highlightMatchedWordFor(List<String> terms, {required bool whenAllTermsAreMatch}) {
-    final updatedTerms =
-        terms.map((e) => e.trim()).where((element) => element.isNotEmpty).toSet().toList();
+    final updatedTerms = terms
+        .map((e) => e.trim())
+        .where((element) => element.isNotEmpty)
+        .toSet()
+        .toList();
 
     if (updatedTerms.isEmpty) {
       return this;

@@ -91,10 +91,9 @@ class SimpleRichText extends StatelessWidget with TextProcessing {
       textSpan,
       maxLines: config.maxLines,
       textAlign: config.textAlign ?? TextAlign.justify,
-      textScaler:
-          config.textScaleFactor != null
-              ? TextScaler.linear(config.textScaleFactor!)
-              : TextScaler.noScaling,
+      textScaler: config.textScaleFactor != null
+          ? TextScaler.linear(config.textScaleFactor!)
+          : TextScaler.noScaling,
     );
 
     return textWidget;
