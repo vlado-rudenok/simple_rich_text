@@ -1,6 +1,7 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_auto_size_text/flutter_auto_size_text.dart';
 
 import 'simple_rich_text.dart';
 import 'src/mixin/text_processing.dart';
@@ -49,7 +50,7 @@ class SimpleRichText extends StatelessWidget with TextProcessing {
       style: style,
     );
     final children = [
-      if (config.textIndent > 0)
+      if (config.textIndent > 0 && !config.autoSizeEnabled)
         WidgetSpan(
           child: SizedBox(
             width: config.textIndent,
@@ -87,7 +88,18 @@ class SimpleRichText extends StatelessWidget with TextProcessing {
 
     onTextGenerated?.call(textSpan);
 
-    final textWidget = Text.rich(
+    if (config.autoSizeEnabled) {
+      return AutoSizeText.rich(
+        textSpan,
+        maxLines: config.maxLines,
+        textAlign: config.textAlign ?? TextAlign.justify,
+        maxFontSize: style.fontSize,
+        minFontSize: 8,
+        style: style,
+      );
+    }
+
+    return Text.rich(
       textSpan,
       maxLines: config.maxLines,
       textAlign: config.textAlign ?? TextAlign.justify,
@@ -95,7 +107,5 @@ class SimpleRichText extends StatelessWidget with TextProcessing {
           ? TextScaler.linear(config.textScaleFactor!)
           : TextScaler.noScaling,
     );
-
-    return textWidget;
   }
 }

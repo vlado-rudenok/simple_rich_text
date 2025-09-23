@@ -1,5 +1,5 @@
 import 'package:collection/collection.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 
 import '../../simple_rich_text.dart';
 import '../error.dart';
@@ -53,6 +53,7 @@ mixin TextProcessing {
                 style: style,
                 acceptNext: acceptNext,
                 onTap: onTap,
+                skipWidgetSpan: config.autoSizeEnabled,
               );
               acceptNext = item.$2;
               index++;
@@ -77,6 +78,7 @@ mixin TextProcessing {
               commandsList: commandsList,
               style: style,
               onTap: onTap,
+              skipWidgetSpan: config.autoSizeEnabled,
             );
             index += adv;
             final TextSpan? toggled;
@@ -92,6 +94,7 @@ mixin TextProcessing {
                 style: style,
                 acceptNext: acceptNext,
                 onTap: onTap,
+                skipWidgetSpan: config.autoSizeEnabled,
               );
               toggled = toggledMarker.$1;
               acceptNext = toggledMarker.$2;
