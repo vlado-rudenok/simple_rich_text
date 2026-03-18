@@ -1,7 +1,7 @@
 import '../../simple_rich_text.dart';
 
 extension SearchResults on String {
-  String get _char => SimpleRichTextMarkdown.filledCircle.rawValue;
+  String get _char => MarkdownSymbol.filledCircle.rawValue;
 
   String highlightSearchResult(SearchableTerm term) {
     final lines = split(_char).map((e) => e.startsWith('{backgroundColor') ? '$_char$e$_char' : e);
