@@ -1,4 +1,4 @@
-enum SimpleRichTextMarkdown {
+enum MarkdownSymbol {
   asterisk('*'),
   atSymbol('@'),
   backtick('`'),
@@ -7,7 +7,7 @@ enum SimpleRichTextMarkdown {
   percentageSign('%'),
   tilde('~');
 
-  const SimpleRichTextMarkdown(this.rawValue);
+  const MarkdownSymbol(this.rawValue);
 
   final String rawValue;
 

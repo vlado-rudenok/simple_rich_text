@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
+import '../simple_rich_text.dart';
 import 'colors.dart';
 import 'commands_handler.dart';
 import 'error.dart';
@@ -133,13 +134,18 @@ extension Splitable on String {
           ? Colors.black
           : map.containsKey('color')
           ? parseColor(map['color']!)
-          : (set.contains('`') || set.contains('@'))
+          : (set.contains(MarkdownSymbol.tilde.rawValue) ||
+                set.contains(MarkdownSymbol.atSymbol.rawValue))
           ? Colors.grey
           : style.color,
       decoration: set.contains('_') ? TextDecoration.underline : TextDecoration.none,
-      fontStyle: set.contains('^') || set.contains('%') ? FontStyle.italic : FontStyle.normal,
-      fontWeight: set.contains('*')
-          ? set.contains('~')
+      fontStyle:
+          set.contains(MarkdownSymbol.caret.rawValue) ||
+              set.contains(MarkdownSymbol.percentageSign.rawValue)
+          ? FontStyle.italic
+          : FontStyle.normal,
+      fontWeight: set.contains(MarkdownSymbol.asterisk.rawValue)
+          ? set.contains(MarkdownSymbol.backtick.rawValue)
                 ? FontWeight.normal
                 : FontWeight.bold
           : FontWeight.normal,

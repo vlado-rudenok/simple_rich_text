@@ -59,9 +59,9 @@ class SimpleRichText extends StatelessWidget with TextProcessing {
             child: const Text(''),
           ),
         ),
-      if (leading != null) leading!,
+      ?leading,
       ...formatted,
-      if (trailing != null) trailing!,
+      ?trailing,
     ];
 
     onUpdate?.call(

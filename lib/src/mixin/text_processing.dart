@@ -27,7 +27,7 @@ mixin TextProcessing {
     final linesList = text.splitIntoLines();
 
     final items = linesList.asMap().entries.map((entry) {
-      final spansList = entry.value.splitWithChars(SimpleRichTextMarkdown.allCharsPattern);
+      final spansList = entry.value.splitWithChars(MarkdownSymbol.allCharsPattern);
       if (spansList.length == 1) {
         return [
           TextSpan(text: entry.value, style: style),
@@ -103,7 +103,7 @@ mixin TextProcessing {
               toggled = null;
             }
 
-            return [if (toggled != null) toggled, item];
+            return [?toggled, item];
           }
         });
 
