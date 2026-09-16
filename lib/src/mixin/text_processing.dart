@@ -38,7 +38,8 @@ mixin TextProcessing {
         var acceptNext = true;
         String? commandsList;
 
-        final items = spansList.map((currentSpan) {
+        final items = spansList.map((span) {
+          var currentSpan = span; // local mutable variable
           log('========== $currentSpan ==========');
           commandsList = null; //TRY
           if (currentSpan.isEmpty) {
@@ -54,6 +55,7 @@ mixin TextProcessing {
                 acceptNext: acceptNext,
                 onTap: onTap,
                 skipWidgetSpan: config.autoSizeEnabled,
+                symbolColors: config.symbolColors,
               );
               acceptNext = item.$2;
               index++;
@@ -79,6 +81,7 @@ mixin TextProcessing {
               style: style,
               onTap: onTap,
               skipWidgetSpan: config.autoSizeEnabled,
+              symbolColors: config.symbolColors,
             );
             index += adv;
             final TextSpan? toggled;
@@ -95,6 +98,7 @@ mixin TextProcessing {
                 acceptNext: acceptNext,
                 onTap: onTap,
                 skipWidgetSpan: config.autoSizeEnabled,
+                symbolColors: config.symbolColors,
               );
               toggled = toggledMarker.$1;
               acceptNext = toggledMarker.$2;
