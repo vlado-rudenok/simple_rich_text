@@ -3,8 +3,10 @@ enum MarkdownSymbol {
   atSymbol('@'),
   backtick('`'),
   caret('^'),
+  extraSymbol('◆'),
   filledCircle('●'),
   percentageSign('%'),
+  rareSymbol('■'),
   tilde('~');
 
   const MarkdownSymbol(this.rawValue);

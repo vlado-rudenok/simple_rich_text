@@ -31,13 +31,14 @@ extension Splitable on String {
     required String? commandsList,
     required TextStyle style,
     required bool skipWidgetSpan,
+    required Map<String, Color> symbolColors,
     required void Function(String)? onTap,
   }) {
     log('wrap: $this set=$set');
 
     final map = <String, String>{if (commandsList != null) ..._parseCommands(commandsList)};
 
-    final textStyle = _prepareStyle(map, set, map.parseDecorationStyle(), style);
+    final textStyle = _prepareStyle(map, set, map.parseDecorationStyle(), style, symbolColors);
     log('attributes: $map');
 
     if (map.containsCommands()) {
@@ -49,7 +50,7 @@ extension Splitable on String {
         // Since TextSpan itself is @immutable, this means that you would have to manage the recognizer from outside
         // the TextSpan, e.g. in the State of a stateful widget that then hands the recognizer to the TextSpan.
         recognizer: TapGestureRecognizer()
-          ..onTap = () async =>
+          ..onTap = () =>
               CommandHandler.handleTap(caption: this, map: map, context: context, onTap: onTap),
         style: textStyle,
       );
@@ -79,6 +80,7 @@ extension Splitable on String {
     required TextStyle style,
     required bool acceptNext,
     required bool skipWidgetSpan,
+    required Map<String, Color> symbolColors,
     required void Function(String)? onTap,
   }) {
     if (this == r'\') {
@@ -91,6 +93,7 @@ extension Splitable on String {
         style: style,
         onTap: onTap,
         skipWidgetSpan: skipWidgetSpan,
+        symbolColors: symbolColors,
       );
       return (item, false);
     } else {
@@ -128,16 +131,18 @@ extension Splitable on String {
     Set<String> set,
     TextDecorationStyle? textDecorationStyle,
     TextStyle style,
+    Map<String, Color> symbolColors,
   ) {
     final textStyle = style.copyWith(
       color: map.containsKey('searchResult')
           ? Colors.black
           : map.containsKey('color')
           ? parseColor(map['color']!)
-          : (set.contains(MarkdownSymbol.tilde.rawValue) ||
-                set.contains(MarkdownSymbol.atSymbol.rawValue))
-          ? Colors.grey
-          : style.color,
+          : _symbolColor(set, symbolColors) ??
+                ((set.contains(MarkdownSymbol.tilde.rawValue) ||
+                      set.contains(MarkdownSymbol.atSymbol.rawValue))
+                    ? Colors.grey
+                    : style.color),
       decoration: set.contains('_') ? TextDecoration.underline : TextDecoration.none,
       fontStyle:
           set.contains(MarkdownSymbol.caret.rawValue) ||
@@ -172,5 +177,18 @@ extension Splitable on String {
           : style.wordSpacing,
     );
     return textStyle;
+  }
+
+  Color? _symbolColor(Set<String> set, Map<String, Color> symbolColors) {
+    if (symbolColors.isEmpty || set.isEmpty) {
+      return null;
+    }
+    for (final marker in set) {
+      final color = symbolColors[marker];
+      if (color != null) {
+        return color;
+      }
+    }
+    return null;
   }
 }

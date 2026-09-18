@@ -9,6 +9,7 @@ class SimpleRichTextConfig {
     this.textScaleFactor,
     this.textIndent = 0,
     this.autoSizeEnabled = false,
+    this.symbolColors = const {},
   });
 
   final double? textScaleFactor;
@@ -20,4 +21,7 @@ class SimpleRichTextConfig {
   /// allow non-closed tags (e.g., "this is *bold" because no closing * character), otherwise exception is thrown
   final bool allowNonClosedTags;
   final double textIndent;
+
+  /// Maps markdown marker characters (e.g. `■`, `^`) to colors applied while that marker is active.
+  final Map<String, Color> symbolColors;
 }
