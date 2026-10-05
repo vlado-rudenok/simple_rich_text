@@ -33,13 +33,20 @@ extension on String {
       return this;
     }
 
+    // Prefer longer phrases so "Jesus in" wins over "in" at the same start.
+    updatedTerms.sort((a, b) => b.length.compareTo(a.length));
+
     if (whenAllTermsAreMatch &&
-        !terms.every((term) => RegExp(term, caseSensitive: false).hasMatch(this))) {
+        !updatedTerms.every((term) => _letterBoundedRegExp(term).hasMatch(this))) {
       return this;
     }
 
     return replaceAllMapped(
-      RegExp(updatedTerms.map(RegExp.escape).join('|'), caseSensitive: false),
+      RegExp(
+        updatedTerms.map(_letterBoundedPattern).join('|'),
+        caseSensitive: false,
+        unicode: true,
+      ),
       (match) {
         final matchedWord = match.group(0)!;
         final result = '^{searchResult:search_result}$matchedWord^';
@@ -59,3 +66,9 @@ extension on String {
     return '$_char$wrappedText$_char$keyword';
   }
 }
+
+String _letterBoundedPattern(String term) =>
+    '(?<!\\p{L})${RegExp.escape(term)}(?!\\p{L})';
+
+RegExp _letterBoundedRegExp(String term) =>
+    RegExp(_letterBoundedPattern(term), caseSensitive: false, unicode: true);
