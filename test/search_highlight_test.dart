@@ -53,6 +53,20 @@ void main() {
     });
   });
 
+  group('substring search highlighting', () {
+    test('highlights in inside fine when wholeWord is false', () {
+      const text = 'fine morning';
+      final highlighted = text.highlightSearchResult(
+        SearchableTerm.matchAnyTerms(['in'], wholeWord: false),
+      );
+
+      expect(
+        highlighted,
+        'f^{searchResult:search_result}in^e morn^{searchResult:search_result}in^g',
+      );
+    });
+  });
+
   testWidgets('search highlight paints whole-word matches only', (tester) async {
     TextSpan? generated;
     const searchResultColor = Color(0xFFECC950);

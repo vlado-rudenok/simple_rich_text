@@ -9,11 +9,23 @@ extension SearchResults on String {
     return switch (term.type) {
       SearchableTermType.matchAllTerms =>
         lines
-            .map((e) => e.highlightMatchedWordFor(term.terms ?? [], whenAllTermsAreMatch: true))
+            .map(
+              (e) => e.highlightMatchedWordFor(
+                term.terms ?? [],
+                whenAllTermsAreMatch: true,
+                wholeWord: term.wholeWord,
+              ),
+            )
             .join(),
       SearchableTermType.matchAnyTerms =>
         lines
-            .map((e) => e.highlightMatchedWordFor(term.terms ?? [], whenAllTermsAreMatch: false))
+            .map(
+              (e) => e.highlightMatchedWordFor(
+                term.terms ?? [],
+                whenAllTermsAreMatch: false,
+                wholeWord: term.wholeWord,
+              ),
+            )
             .join(),
       SearchableTermType.navigateOnly => '^{navAnchor:nav_anchor}^$this',
       SearchableTermType.none => this,
@@ -22,7 +34,11 @@ extension SearchResults on String {
 }
 
 extension on String {
-  String highlightMatchedWordFor(List<String> terms, {required bool whenAllTermsAreMatch}) {
+  String highlightMatchedWordFor(
+    List<String> terms, {
+    required bool whenAllTermsAreMatch,
+    required bool wholeWord,
+  }) {
     final updatedTerms = terms
         .map((e) => e.trim())
         .where((element) => element.isNotEmpty)
@@ -36,14 +52,18 @@ extension on String {
     // Prefer longer phrases so "Jesus in" wins over "in" at the same start.
     updatedTerms.sort((a, b) => b.length.compareTo(a.length));
 
-    if (whenAllTermsAreMatch &&
-        !updatedTerms.every((term) => _letterBoundedRegExp(term).hasMatch(this))) {
+    final hasAll = updatedTerms.every(
+      (term) => wholeWord
+          ? _letterBoundedRegExp(term).hasMatch(this)
+          : toLowerCase().contains(term.toLowerCase()),
+    );
+    if (whenAllTermsAreMatch && !hasAll) {
       return this;
     }
 
     return replaceAllMapped(
       RegExp(
-        updatedTerms.map(_letterBoundedPattern).join('|'),
+        updatedTerms.map((term) => wholeWord ? _letterBoundedPattern(term) : RegExp.escape(term)).join('|'),
         caseSensitive: false,
         unicode: true,
       ),
